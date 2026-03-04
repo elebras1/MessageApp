@@ -37,6 +37,8 @@ public class MessageAppLauncher {
 
 		EntityManager entityManager = new EntityManager(database);
 
+		DbConnector dbConnector = new DbConnector(database);
+
 		DataManager dataManager = new DataManager(database, entityManager);
 		dataManager.setExchangeDirectory("C:/Users/erwan/Documents/dev/");
 
@@ -44,7 +46,6 @@ public class MessageAppLauncher {
 
 		dataManager.addObserver(observer);
 
-		DbConnector dbConnector = new DbConnector(database);
 
 		if (IS_MOCK_ENABLED) {
 			MessageAppMock mock = new MessageAppMock(dbConnector, dataManager);
@@ -53,7 +54,7 @@ public class MessageAppLauncher {
 
 		Session session = new Session();
 
-		mockData(dbConnector);
+		mockData(dataManager);
 
 		MessageApp messageApp = new MessageApp(dataManager, session);
 		messageApp.init();
@@ -61,59 +62,63 @@ public class MessageAppLauncher {
 
 	}
 
-	private static void mockData(DbConnector dbConnector) {
+	private static void mockData(DataManager dataManager) {
 		User alice = new User("alice", "alice", "Alice Martin");
 		User bob = new User("bob", "pass456", "Bob Dupont");
 		User charlie = new User("charlie", "pass789", "Charlie Durand");
 		User diana = new User("diana", "passabc", "Diana Leroy");
 		User user = new User("user", "user", "User Test");
+		if(dataManager.getUsers().contains(alice) || dataManager.getUsers().contains(bob) || dataManager.getUsers().contains(charlie) || dataManager.getUsers().contains(diana) || dataManager.getUsers().contains(user)) {
+			System.out.println("Les utilisateurs de test existent déjà, pas de doublons créés.");
+			return;
+		}
 
-		dbConnector.addUser(alice);
-		dbConnector.addUser(bob);
-		dbConnector.addUser(charlie);
-		dbConnector.addUser(diana);
-		dbConnector.addUser(user);
+		dataManager.sendUser(alice);
+		dataManager.sendUser(bob);
+		dataManager.sendUser(charlie);
+		dataManager.sendUser(diana);
+		dataManager.sendUser(user);
 
-		dbConnector.addMessage(new Message(alice, bob.getUuid(), "Salut Bob, t'es dispo ce soir ?"));
-		dbConnector.addMessage(new Message(bob, alice.getUuid(), "Oui ! On fait quoi ?"));
-		dbConnector.addMessage(new Message(alice, bob.getUuid(), "On pourrait regarder un film ?"));
-		dbConnector.addMessage(new Message(bob, alice.getUuid(), "Bonne idée, lequel ?"));
-		dbConnector.addMessage(new Message(alice, bob.getUuid(), "Surprise 😄"));
+		dataManager.sendMessage(new Message(alice, bob.getUuid(), "Salut Bob, t'es dispo ce soir ?"));
+		dataManager.sendMessage(new Message(bob, alice.getUuid(), "Oui ! On fait quoi ?"));
+		dataManager.sendMessage(new Message(alice, bob.getUuid(), "On pourrait regarder un film ?"));
+		dataManager.sendMessage(new Message(bob, alice.getUuid(), "Bonne idée, lequel ?"));
+		dataManager.sendMessage(new Message(alice, bob.getUuid(), "Surprise 😄"));
 
-		dbConnector.addMessage(new Message(charlie, diana.getUuid(),"Diana, le rapport est prêt pour demain ?"));
-		dbConnector.addMessage(new Message(diana, charlie.getUuid(), "Presque, il me reste la conclusion."));
-		dbConnector.addMessage(new Message(charlie, diana.getUuid(), "OK, envoie-le moi avant 17h."));
-		dbConnector.addMessage(new Message(diana,charlie.getUuid(), "Pas de souci, c'est noté."));
+		dataManager.sendMessage(new Message(charlie, diana.getUuid(),"Diana, le rapport est prêt pour demain ?"));
+		dataManager.sendMessage(new Message(diana, charlie.getUuid(), "Presque, il me reste la conclusion."));
+		dataManager.sendMessage(new Message(charlie, diana.getUuid(), "OK, envoie-le moi avant 17h."));
+		dataManager.sendMessage(new Message(diana,charlie.getUuid(), "Pas de souci, c'est noté."));
 
-		dbConnector.addMessage(new Message(alice, charlie.getUuid(), "Charlie, réunion déplacée à 16h."));
+		dataManager.sendMessage(new Message(alice, charlie.getUuid(), "Charlie, réunion déplacée à 16h."));
 
 		Channel general = new Channel(alice, "Général");
 		Channel dev = new Channel(bob, "Développement");
-		dbConnector.addChannel(general);
-		dbConnector.addChannel(dev);
+		dataManager.sendChannel(general);
+		dataManager.sendChannel(dev);
 
-		dbConnector.addMessage(new Message(alice, general.getUuid(), "Bienvenue sur le channel Général !"));
-		dbConnector.addMessage(new Message(bob, general.getUuid(), "Bonjour tout le monde 👋"));
-		dbConnector.addMessage(new Message(charlie, general.getUuid(), "Salut la team !"));
-		dbConnector.addMessage(new Message(diana, general.getUuid(), "Hello !"));
+		dataManager.sendMessage(new Message(alice, general.getUuid(), "Bienvenue sur le channel Général !"));
+		dataManager.sendMessage(new Message(bob, general.getUuid(), "Bonjour tout le monde 👋"));
+		dataManager.sendMessage(new Message(charlie, general.getUuid(), "Salut la team !"));
+		dataManager.sendMessage(new Message(diana, general.getUuid(), "Hello !"));
 
-		dbConnector.addMessage(new Message(bob, dev.getUuid(), "Quelqu'un a regardé le bug #42 ?"));
-		dbConnector.addMessage(new Message(charlie, dev.getUuid(), "Oui, c'est un NPE dans le DataManager."));
-		dbConnector.addMessage(new Message(bob, dev.getUuid(), "J'ouvre une PR ce soir."));
+		dataManager.sendMessage(new Message(bob, dev.getUuid(), "Quelqu'un a regardé le bug #42 ?"));
+		dataManager.sendMessage(new Message(charlie, dev.getUuid(), "Oui, c'est un NPE dans le DataManager."));
+		dataManager.sendMessage(new Message(bob, dev.getUuid(), "J'ouvre une PR ce soir."));
 
 		Channel projetAlpha = new Channel(alice, "Projet Alpha", List.of(alice, bob, charlie));
 		Channel equipeRH = new Channel(diana, "Équipe RH", List.of(diana, alice));
-		dbConnector.addChannel(projetAlpha);
-		dbConnector.addChannel(equipeRH);
+		dataManager.sendChannel(projetAlpha);
+		dataManager.sendChannel(equipeRH);
 
-		dbConnector.addMessage(new Message(alice, projetAlpha.getUuid(), "Kickoff du projet lundi 9h !"));
-		dbConnector.addMessage(new Message(bob, projetAlpha.getUuid(), "Je serai là."));
-		dbConnector.addMessage(new Message(charlie, projetAlpha.getUuid(), "Pareil, j'apporte les slides."));
+		dataManager.sendMessage(new Message(alice, projetAlpha.getUuid(), "Kickoff du projet lundi 9h !"));
+		dataManager.sendMessage(new Message(bob, projetAlpha.getUuid(), "Je serai là."));
+		dataManager.sendMessage(new Message(charlie, projetAlpha.getUuid(), "Pareil, j'apporte les slides."));
 
-		dbConnector.addMessage(new Message(diana, equipeRH.getUuid(), "Entretien de Bob planifié vendredi."));
-		dbConnector.addMessage(new Message(alice, equipeRH.getUuid(), "Reçu, je bloque le créneau."));
+		dataManager.sendMessage(new Message(diana, equipeRH.getUuid(), "Entretien de Bob planifié vendredi."));
+		dataManager.sendMessage(new Message(alice, equipeRH.getUuid(), "Reçu, je bloque le créneau."));
 
 		Channel annonces = new Channel(alice, "Annonces");
-		dbConnector.addChannel(annonces);
+		dataManager.sendChannel(annonces);
 	}
 }

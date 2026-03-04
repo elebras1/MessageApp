@@ -228,6 +228,7 @@ public class DataFilesManager {
 	 */
 	protected User getUserFromUuid(String uuid, Map<UUID, User> userMap) {
 		// Récupération de l'utilisateur en fonction de l'UUID
+		System.out.println(UUID.fromString(uuid));
 		User user = userMap.get(UUID.fromString(uuid));
 		if (user == null) {
 			user = userMap.get(Constants.UNKNONWN_USER_UUID);
@@ -262,18 +263,18 @@ public class DataFilesManager {
 	 * @param users
 	 */
 	protected String getUsersAsString(List<User> users) {
-		String usersAsString = "";
+		StringBuilder usersAsString = new StringBuilder();
 
 		Iterator<User> iterator = users.iterator();
 		while (iterator.hasNext()) {
-			usersAsString += iterator.next();
+			usersAsString.append(iterator.next().getUuid());
 
 			if (iterator.hasNext()) {
-				usersAsString += USER_SEPARATOR;
+				usersAsString.append(USER_SEPARATOR);
 			}
 		}
 
-		return usersAsString;
+		return usersAsString.toString();
 	}
 
 	/**

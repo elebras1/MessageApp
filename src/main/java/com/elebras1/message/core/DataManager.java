@@ -2,6 +2,7 @@ package com.elebras1.message.core;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import com.elebras1.message.core.database.EntityManager;
 import com.elebras1.message.core.database.IDatabase;
@@ -108,65 +109,46 @@ public class DataManager {
 	 * @param channel
 	 */
 	public void sendChannel(Channel channel) {
-		// Ecrit un canal
 		this.mEntityManager.writeChannelFile(channel);
 	}
 
-	/**
-	 * Retourne tous les Messages d'un utilisateur.
-	 *
-	 * @param user utilisateur dont les messages sont à rechercher.
-	 */
-	public Set<Message> getMessagesFrom(User user) {
+	public Set<Message> getMessagesFrom(UUID senderUuid) {
 		Set<Message> userMessages = new HashSet<>();
-
-		// Parcours de tous les messages de la base
 		for (Message message : this.getMessages()) {
-			// Si le message est celui recherché
-			if (message.getSender().equals(user)) {
+			if (message.getSender().getUuid().equals(senderUuid)) {
 				userMessages.add(message);
 			}
 		}
-
 		return userMessages;
 	}
 
-	/**
-	 * Retourne tous les Messages d'un utilisateur addressé à un autre.
-	 *
-	 * @param sender utilisateur dont les messages sont à rechercher.
-	 * @param recipient destinataire des messages recherchés.
-	 */
-	public Set<Message> getMessagesFrom(User sender, IMessageRecipient recipient) {
+	public Set<Message> getMessagesFrom(UUID senderUuid, UUID recipientUuid) {
 		Set<Message> userMessages = new HashSet<>();
-
-		// Parcours de tous les messages de l'utilisateur
-		for (Message message : this.getMessagesFrom(sender)) {
-			// Si le message est celui recherché
-			if (message.getRecipient().equals(recipient.getUuid())) {
+		for (Message message : this.getMessagesFrom(senderUuid)) {
+			if (message.getRecipient().equals(recipientUuid)) {
 				userMessages.add(message);
 			}
 		}
-
 		return userMessages;
 	}
 
-	/**
-	 * Retourne tous les Messages adressés à un utilisateur.
-	 *
-	 * @param user utilisateur dont les messages sont à rechercher.
-	 */
-	public Set<Message> getMessagesTo(User user) {
+	public Set<Message> getMessagesTo(UUID recipientUuid) {
 		Set<Message> userMessages = new HashSet<>();
-
-		// Parcours de tous les messages de la base
 		for (Message message : this.getMessages()) {
-			// Si le message est celui recherché
-			if (message.getSender().equals(user)) {
+			if (message.getRecipient().equals(recipientUuid)) {
 				userMessages.add(message);
 			}
 		}
+		return userMessages;
+	}
 
+	public Set<Message> getMessagesTo(UUID recipientUuid, UUID senderUuid) {
+		Set<Message> userMessages = new HashSet<>();
+		for (Message message : this.getMessagesTo(recipientUuid)) {
+			if (message.getSender().getUuid().equals(senderUuid)) {
+				userMessages.add(message);
+			}
+		}
 		return userMessages;
 	}
 

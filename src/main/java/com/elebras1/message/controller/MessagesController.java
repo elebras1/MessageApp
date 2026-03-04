@@ -6,7 +6,9 @@ import com.elebras1.message.datamodel.User;
 import com.elebras1.message.ihm.view.BubbleTextView;
 import com.elebras1.message.ihm.view.MessagesView;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 
 public class MessagesController implements IMessagesController, IChatObserver {
@@ -35,22 +37,15 @@ public class MessagesController implements IMessagesController, IChatObserver {
         this.currentRecipientUuid = recipientUuid;
         view.clearMessages();
 
-        dataManager.getMessages().stream()
-                .filter(message -> isConversationMessage(message, recipientUuid))
-                .sorted(Comparator.comparing(Message::getEmissionDate))
-                .map(message -> new BubbleTextView(message.getText()))
-                .forEach(view::addMessage);
-    }
+        List<Message> conversation = new ArrayList<>();
+        conversation.addAll(dataManager.getMessagesFrom(connectedUser.getUuid(), recipientUuid));
+        conversation.addAll(dataManager.getMessagesTo(connectedUser.getUuid(), recipientUuid));
 
-    private boolean isConversationMessage(Message message, UUID recipientUuid) {
-        UUID sender = message.getSender().getUuid();
-        UUID recipient = message.getRecipient();
-        UUID currentUserUuid = connectedUser.getUuid();
+        conversation.sort(Comparator.comparing(Message::getEmissionDate));
 
-        boolean sentByMe = currentUserUuid.equals(sender) && recipientUuid.equals(recipient);
-        boolean receivedByMe = recipientUuid.equals(sender) && currentUserUuid.equals(recipient);
-
-        return sentByMe || receivedByMe;
+        for (Message message : conversation) {
+            view.addMessage(new BubbleTextView(message.getText()));
+        }
     }
 
     @Override

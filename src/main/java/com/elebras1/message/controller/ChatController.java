@@ -40,7 +40,6 @@ public class ChatController implements IChatController, ISessionObserver {
         listChannelController.loadChannels(connectedUser);
         view.setLeftDownSection(channelView);
 
-
         mainView.addPanel(view);
     }
 
