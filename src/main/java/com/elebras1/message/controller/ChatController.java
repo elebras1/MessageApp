@@ -29,12 +29,14 @@ public class ChatController implements IChatController, ISessionObserver {
         view.setRightSection(messagesView);
 
         ListBubbleTextView usersView = new ListBubbleTextView();
-        UsersController listUserController = new UsersController(dataManager, usersView, listMessageController);
+        UsersController listUserController = new UsersController(dataManager, usersView);
+        listUserController.addChatObserver(listMessageController);
         listUserController.loadUsers(connectedUser);
         view.setLeftUpSection(usersView);
 
         ListBubbleTextView channelView = new ListBubbleTextView();
-        ChannelsController listChannelController = new ChannelsController(dataManager, channelView, listMessageController);
+        ChannelsController listChannelController = new ChannelsController(dataManager, channelView);
+        listChannelController.addChatObserver(listMessageController);
         listChannelController.loadChannels(connectedUser);
         view.setLeftDownSection(channelView);
 

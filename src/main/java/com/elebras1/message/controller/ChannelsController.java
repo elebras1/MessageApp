@@ -9,25 +9,42 @@ import com.elebras1.message.ihm.view.ListBubbleTextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChannelsController implements IChannelsController {
+public class ChannelsController implements IChannelsController, IChatObservable {
     private final DataManager dataManager;
     private final ListBubbleTextView view;
-    private final MessagesController messagesController;
+    private final List<IChatObserver> observers = new ArrayList<>();
 
-    public ChannelsController(DataManager dataManager, ListBubbleTextView view, MessagesController messagesController) {
+    public ChannelsController(DataManager dataManager, ListBubbleTextView view) {
         this.dataManager = dataManager;
         this.view = view;
-        this.messagesController = messagesController;
+    }
+
+    @Override
+    public void addChatObserver(IChatObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeChatObserver(IChatObserver observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyRecipientSelected(java.util.UUID recipientUuid) {
+        for (IChatObserver observer : observers) {
+            observer.onRecipientSelected(recipientUuid);
+        }
     }
 
     @Override
     public void loadChannels(User connectedUser) {
         List<Channel> allChannels = new ArrayList<>(dataManager.getChannels());
         for (Channel channel : allChannels) {
-            BubbleTextIdentifyView bubble = new BubbleTextIdentifyView(channel.getUuid(), channel.getName());
-            bubble.addOnClickListener(messagesController::loadMessagesByRecipientUuid);
-            view.addContent(bubble);
+            if (channel.getUsers().contains(connectedUser)) {
+                BubbleTextIdentifyView bubble = new BubbleTextIdentifyView(channel.getUuid(), channel.getName());
+                bubble.addOnClickListener(this::notifyRecipientSelected);
+                view.addContent(bubble);
+            }
         }
     }
-
 }

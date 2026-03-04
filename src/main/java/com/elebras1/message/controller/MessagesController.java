@@ -6,11 +6,10 @@ import com.elebras1.message.datamodel.User;
 import com.elebras1.message.ihm.view.BubbleTextView;
 import com.elebras1.message.ihm.view.MessagesView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
 import java.util.UUID;
 
-public class MessagesController implements IMessagesController {
+public class MessagesController implements IMessagesController, IChatObserver {
     private final DataManager dataManager;
     private final MessagesView view;
     private User connectedUser;
@@ -27,15 +26,31 @@ public class MessagesController implements IMessagesController {
     }
 
     @Override
+    public void onRecipientSelected(UUID recipientUuid) {
+        loadMessagesByRecipientUuid(recipientUuid);
+    }
+
+    @Override
     public void loadMessagesByRecipientUuid(UUID recipientUuid) {
         this.currentRecipientUuid = recipientUuid;
         view.clearMessages();
-        List<Message> allMessages = new ArrayList<>(dataManager.getMessages());
-        for (Message message : allMessages) {
-            if (recipientUuid.equals(message.getRecipient())) {
-                view.addMessage(new BubbleTextView(message.getText()));
-            }
-        }
+
+        dataManager.getMessages().stream()
+                .filter(message -> isConversationMessage(message, recipientUuid))
+                .sorted(Comparator.comparing(Message::getEmissionDate))
+                .map(message -> new BubbleTextView(message.getText()))
+                .forEach(view::addMessage);
+    }
+
+    private boolean isConversationMessage(Message message, UUID recipientUuid) {
+        UUID sender = message.getSender().getUuid();
+        UUID recipient = message.getRecipient();
+        UUID currentUserUuid = connectedUser.getUuid();
+
+        boolean sentByMe = currentUserUuid.equals(sender) && recipientUuid.equals(recipient);
+        boolean receivedByMe = recipientUuid.equals(sender) && currentUserUuid.equals(recipient);
+
+        return sentByMe || receivedByMe;
     }
 
     @Override

@@ -36,9 +36,9 @@ public class MessageAppLauncher {
 		Database database = new Database();
 
 		EntityManager entityManager = new EntityManager(database);
-		entityManager.setExchangeDirectory("C:/Users/erwan/Documents/dev/");
 
 		DataManager dataManager = new DataManager(database, entityManager);
+		dataManager.setExchangeDirectory("C:/Users/erwan/Documents/dev/");
 
 		DatabaseObserver observer = new DatabaseObserver();
 
@@ -62,7 +62,7 @@ public class MessageAppLauncher {
 	}
 
 	private static void mockData(DbConnector dbConnector) {
-		User alice = new User("alice", "pass123", "Alice Martin");
+		User alice = new User("alice", "alice", "Alice Martin");
 		User bob = new User("bob", "pass456", "Bob Dupont");
 		User charlie = new User("charlie", "pass789", "Charlie Durand");
 		User diana = new User("diana", "passabc", "Diana Leroy");
@@ -102,7 +102,7 @@ public class MessageAppLauncher {
 		dbConnector.addMessage(new Message(bob, dev.getUuid(), "J'ouvre une PR ce soir."));
 
 		Channel projetAlpha = new Channel(alice, "Projet Alpha", List.of(alice, bob, charlie));
-		Channel equipeRH    = new Channel(diana, "Équipe RH", List.of(diana, alice));
+		Channel equipeRH = new Channel(diana, "Équipe RH", List.of(diana, alice));
 		dbConnector.addChannel(projetAlpha);
 		dbConnector.addChannel(equipeRH);
 
