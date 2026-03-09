@@ -1,3 +1,5 @@
+import org.gradle.jvm.tasks.Jar
+
 plugins {
     id("java")
 }
@@ -17,4 +19,10 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.named<Jar>("jar") {
+    manifest {
+        attributes["Main-Class"] = "com.elebras1.message.MessageAppLauncher"
+    }
 }
