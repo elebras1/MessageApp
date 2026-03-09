@@ -5,15 +5,15 @@ import java.awt.*;
 import java.util.function.Consumer;
 
 public class MessagesView extends JPanel {
-    private final ListBubbleTextView listBubbleTextView;
+    private final ListElementView listElementView;
     private final BubbleTextEditableView newMessageView;
     private final JButton sendButton;
 
     public MessagesView() {
         setLayout(new BorderLayout());
 
-        listBubbleTextView = new ListBubbleTextView();
-        add(listBubbleTextView, BorderLayout.CENTER);
+        listElementView = new ListElementView();
+        add(listElementView, BorderLayout.CENTER);
 
         JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
@@ -39,10 +39,10 @@ public class MessagesView extends JPanel {
     }
 
     public void clearMessages() {
-        listBubbleTextView.clearContent();
+        listElementView.clearContent();
     }
 
-    public void addMessage(BubbleTextView messageView) {
-        listBubbleTextView.addContent(messageView);
+    public void addMessage(MessageView messageView) {
+        listElementView.addContent(messageView);
     }
 }

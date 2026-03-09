@@ -4,7 +4,7 @@ import com.elebras1.message.core.DataManager;
 import com.elebras1.message.core.session.ISessionObserver;
 import com.elebras1.message.datamodel.User;
 import com.elebras1.message.ihm.view.ChatView;
-import com.elebras1.message.ihm.view.ListBubbleTextView;
+import com.elebras1.message.ihm.view.ListElementView;
 import com.elebras1.message.ihm.view.MessageAppMainView;
 import com.elebras1.message.ihm.view.MessagesView;
 
@@ -28,13 +28,13 @@ public class ChatController implements IChatController, ISessionObserver {
         messagesView.setSendAction(listMessageController::sendMessage);
         view.setRightSection(messagesView);
 
-        ListBubbleTextView usersView = new ListBubbleTextView();
+        ListElementView usersView = new ListElementView();
         UsersController listUserController = new UsersController(dataManager, usersView);
         listUserController.addChatObserver(listMessageController);
         listUserController.loadUsers(connectedUser);
         view.setLeftUpSection(usersView);
 
-        ListBubbleTextView channelView = new ListBubbleTextView();
+        ListElementView channelView = new ListElementView();
         ChannelsController listChannelController = new ChannelsController(dataManager, channelView);
         listChannelController.addChatObserver(listMessageController);
         listChannelController.loadChannels(connectedUser);

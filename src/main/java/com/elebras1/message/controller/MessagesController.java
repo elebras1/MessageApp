@@ -4,12 +4,12 @@ import com.elebras1.message.core.DataManager;
 import com.elebras1.message.datamodel.Message;
 import com.elebras1.message.datamodel.User;
 import com.elebras1.message.ihm.view.BubbleTextView;
+import com.elebras1.message.ihm.view.MessageView;
 import com.elebras1.message.ihm.view.MessagesView;
+import com.elebras1.message.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class MessagesController implements IMessagesController, IChatObserver {
     private final DataManager dataManager;
@@ -44,7 +44,7 @@ public class MessagesController implements IMessagesController, IChatObserver {
         conversation.sort(Comparator.comparing(Message::getEmissionDate));
 
         for (Message message : conversation) {
-            view.addMessage(new BubbleTextView(message.getText()));
+            view.addMessage(new MessageView(message.getText(), message.getSender().getName() + " " + StringUtils.formatDate(message.getEmissionDate())));
         }
     }
 
@@ -59,6 +59,6 @@ public class MessagesController implements IMessagesController, IChatObserver {
 
         Message message = new Message(connectedUser, currentRecipientUuid, text.trim());
         dataManager.sendMessage(message);
-        view.addMessage(new BubbleTextView(message.getText()));
+        view.addMessage(new MessageView(message.getText(), message.getSender().getName() + " " + StringUtils.formatDate(message.getEmissionDate())));
     }
 }

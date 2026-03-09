@@ -24,12 +24,12 @@ public class ChatView extends JPanel {
         this.add(this.horizontalSplitPane, BorderLayout.CENTER);
     }
 
-    public void setLeftUpSection(ListBubbleTextView leftUpSection) {
+    public void setLeftUpSection(ListElementView leftUpSection) {
         this.verticalSplitPane.setTopComponent(leftUpSection);
         this.horizontalSplitPane.setDividerLocation(0.3);
     }
 
-    public void setLeftDownSection(ListBubbleTextView leftDownSection) {
+    public void setLeftDownSection(ListElementView leftDownSection) {
         this.verticalSplitPane.setBottomComponent(leftDownSection);
         this.horizontalSplitPane.setDividerLocation(0.3);
     }

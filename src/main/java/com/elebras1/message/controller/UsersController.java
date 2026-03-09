@@ -3,17 +3,17 @@ package com.elebras1.message.controller;
 import com.elebras1.message.core.DataManager;
 import com.elebras1.message.datamodel.User;
 import com.elebras1.message.ihm.view.BubbleTextIdentifyView;
-import com.elebras1.message.ihm.view.ListBubbleTextView;
+import com.elebras1.message.ihm.view.ListElementView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UsersController implements IUsersController, IChatObservable {
     private final DataManager dataManager;
-    private final ListBubbleTextView view;
+    private final ListElementView view;
     private final List<IChatObserver> observers = new ArrayList<>();
 
-    public UsersController(DataManager dataManager, ListBubbleTextView view) {
+    public UsersController(DataManager dataManager, ListElementView view) {
         this.dataManager = dataManager;
         this.view = view;
     }

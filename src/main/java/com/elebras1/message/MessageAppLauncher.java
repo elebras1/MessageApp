@@ -53,18 +53,12 @@ public class MessageAppLauncher {
 		}
 
 		Session session = new Session();
-		Session session2 = new Session();
 
 		mockData(dataManager);
 
 		MessageApp messageApp = new MessageApp(dataManager, session);
 		messageApp.init();
 		messageApp.show();
-
-		MessageApp messageApp2 = new MessageApp(dataManager, session2);
-		messageApp2.init();
-		messageApp2.show();
-
 	}
 
 	private static void mockData(DataManager dataManager) {

@@ -4,17 +4,17 @@ import com.elebras1.message.core.DataManager;
 import com.elebras1.message.datamodel.Channel;
 import com.elebras1.message.datamodel.User;
 import com.elebras1.message.ihm.view.BubbleTextIdentifyView;
-import com.elebras1.message.ihm.view.ListBubbleTextView;
+import com.elebras1.message.ihm.view.ListElementView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChannelsController implements IChannelsController, IChatObservable {
     private final DataManager dataManager;
-    private final ListBubbleTextView view;
+    private final ListElementView view;
     private final List<IChatObserver> observers = new ArrayList<>();
 
-    public ChannelsController(DataManager dataManager, ListBubbleTextView view) {
+    public ChannelsController(DataManager dataManager, ListElementView view) {
         this.dataManager = dataManager;
         this.view = view;
     }
