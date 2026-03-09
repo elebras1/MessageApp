@@ -40,7 +40,7 @@ public class MessageAppLauncher {
 		DbConnector dbConnector = new DbConnector(database);
 
 		DataManager dataManager = new DataManager(database, entityManager);
-		dataManager.setExchangeDirectory("C:/Users/erwan/Documents/dev/");
+		dataManager.setExchangeDirectory("C:/Users/erwan/Documents/dev/repertoire_echanges");
 
 		DatabaseObserver observer = new DatabaseObserver();
 
@@ -53,12 +53,17 @@ public class MessageAppLauncher {
 		}
 
 		Session session = new Session();
+		Session session2 = new Session();
 
 		mockData(dataManager);
 
 		MessageApp messageApp = new MessageApp(dataManager, session);
 		messageApp.init();
 		messageApp.show();
+
+		MessageApp messageApp2 = new MessageApp(dataManager, session2);
+		messageApp2.init();
+		messageApp2.show();
 
 	}
 
