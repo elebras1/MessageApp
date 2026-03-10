@@ -1,7 +1,11 @@
 package com.elebras1.message.ihm.view;
 
+import com.elebras1.message.datamodel.User;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class ChannelsView extends JPanel {
     private final ListElementView channelsList;
@@ -18,8 +22,14 @@ public class ChannelsView extends JPanel {
         this.add(this.channelsList, BorderLayout.CENTER);
     }
 
-    public void setOnAddChannelAction(OnClickCallback callback) {
-        this.addChannelButton.addActionListener(_ -> callback.onClick());
+    public void setOnAddChannelAction(Consumer<String> onChannelNameChosen) {
+        this.addChannelButton.addActionListener(_ ->
+                new CreateChannelView(this, onChannelNameChosen).setVisible(true)
+        );
+    }
+
+    public void showMembersDialog(String channelName, List<User> members, List<User> candidates, Consumer<User> onAddMember, Consumer<User> onRemoveMember) {
+        new ChannelMembersView(this, channelName, members, candidates, onAddMember, onRemoveMember).setVisible(true);
     }
 
     public void clearChannels() {
@@ -30,3 +40,5 @@ public class ChannelsView extends JPanel {
         this.channelsList.addContent(channelView);
     }
 }
+
+

@@ -2,6 +2,7 @@ package com.elebras1.message.controller;
 
 import com.elebras1.message.core.DataManager;
 import com.elebras1.message.core.database.IDatabaseObserver;
+import com.elebras1.message.core.session.ISession;
 import com.elebras1.message.datamodel.Channel;
 import com.elebras1.message.datamodel.Message;
 import com.elebras1.message.datamodel.User;
@@ -14,11 +15,13 @@ import java.util.List;
 
 public class UsersController implements IUsersController, ISelectionObservable, IDatabaseObserver {
     private final DataManager dataManager;
+    private final ISession session;
     private final ListElementView view;
     private final List<ISelectionObserver> observers = new ArrayList<>();
 
-    public UsersController(DataManager dataManager, ListElementView view) {
+    public UsersController(DataManager dataManager, ISession session, ListElementView view) {
         this.dataManager = dataManager;
+        this.session = session;
         this.view = view;
     }
 
@@ -44,6 +47,9 @@ public class UsersController implements IUsersController, ISelectionObservable, 
         view.clearContent();
         List<User> allUsers = new ArrayList<>(dataManager.getUsers());
         for (User user : allUsers) {
+            if(user.getUuid().equals(session.getConnectedUser().getUuid())) {
+                continue;
+            }
             BubbleTextIdentifyView bubble = new BubbleTextIdentifyView(user.getUuid(), user.getName());
             bubble.setOnClickCallback(this::notifyRecipientSelected);
             view.addContent(bubble);

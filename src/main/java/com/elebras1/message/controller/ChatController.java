@@ -23,14 +23,13 @@ public class ChatController implements IChatController, ISessionObserver {
     @Override
     public void notifyLogin(User connectedUser) {
         MessagesView messagesView = new MessagesView();
-        MessagesController listMessageController = new MessagesController(dataManager, messagesView);
-        listMessageController.setConnectedUser(connectedUser);
+        MessagesController listMessageController = new MessagesController(dataManager, session, messagesView);
         dataManager.addObserver(listMessageController);
         messagesView.setSendAction(listMessageController::sendMessage);
         view.setRightSection(messagesView);
 
         ListElementView usersView = new ListElementView();
-        UsersController listUserController = new UsersController(dataManager, usersView);
+        UsersController listUserController = new UsersController(dataManager, session, usersView);
         listUserController.addSelectionObserver(listMessageController);
         listUserController.loadUsers();
         dataManager.addObserver(listUserController);

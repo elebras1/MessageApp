@@ -23,7 +23,7 @@ public class ChannelsController implements IChannelsController, ISelectionObserv
         this.session = session;
         this.view = view;
         this.observers = new ArrayList<>();
-        this.view.setOnAddChannelAction(this::showCreateChannelDialog);
+        this.view.setOnAddChannelAction(this::onCreateChannel);
     }
 
     @Override
@@ -50,7 +50,10 @@ public class ChannelsController implements IChannelsController, ISelectionObserv
         for (Channel channel : allChannels) {
             if (channel.getUsers().contains(connectedUser)) {
                 boolean isCreator = channel.getCreator().equals(connectedUser);
-                ChannelView channelView = new ChannelView(channel.getUuid(), channel.getName(), isCreator, this::onRemoveChannel, this::showAddMemberDialog);
+                ChannelView channelView = new ChannelView(
+                        channel.getUuid(), channel.getName(), isCreator,
+                        this::onRemoveChannel, this::onAddMemberRequested
+                );
                 channelView.setOnClickCallback(this::notifyRecipientSelected);
                 view.addChannel(channelView);
             }
@@ -69,8 +72,7 @@ public class ChannelsController implements IChannelsController, ISelectionObserv
         } else {
             List<User> users = new ArrayList<>(channel.getUsers());
             users.remove(connectedUser);
-            Channel updatedChannel = new Channel(channel.getUuid(), channel.getCreator(), channel.getName(), users);
-            dataManager.sendChannel(updatedChannel);
+            dataManager.sendChannel(new Channel(channel.getUuid(), channel.getCreator(), channel.getName(), users));
         }
     }
 
@@ -83,19 +85,13 @@ public class ChannelsController implements IChannelsController, ISelectionObserv
         dataManager.sendChannel(channel);
     }
 
-    private void showCreateChannelDialog() {
-        String channelName = JOptionPane.showInputDialog(view, "Nom du nouveau channel :", "Créer un channel", JOptionPane.PLAIN_MESSAGE);
-        if (channelName != null && !channelName.trim().isEmpty()) {
-            onCreateChannel(channelName.trim());
-        }
-    }
-
-    private void showAddMemberDialog(UUID channelUuid) {
+    private void onAddMemberRequested(UUID channelUuid) {
         Channel channel = dataManager.getChannel(channelUuid);
-        if (channel == null) {
-            return;
-        }
+        if (channel == null) return;
 
+        List<User> members = new ArrayList<>(channel.getUsers());
+
+        // Candidats = utilisateurs pas encore membres
         Set<User> allUsers = dataManager.getUsers();
         List<User> candidates = new ArrayList<>();
         for (User user : allUsers) {
@@ -104,27 +100,30 @@ public class ChannelsController implements IChannelsController, ISelectionObserv
             }
         }
 
-        if (candidates.isEmpty()) {
-            JOptionPane.showMessageDialog(view, "Tous les utilisateurs sont déjà membres de ce channel.", "Ajouter un membre", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-
-        String[] userNames = candidates.stream()
-                .map(u -> u.getName() + " (@" + u.getUserTag() + ")")
-                .toArray(String[]::new);
-
-        String selected = (String) JOptionPane.showInputDialog(view, "Choisir un utilisateur à ajouter :", "Ajouter un membre", JOptionPane.PLAIN_MESSAGE, null, userNames, userNames[0]);
-
-        if (selected != null) {
-            int index = Arrays.asList(userNames).indexOf(selected);
-            if (index >= 0) {
-                User userToAdd = candidates.get(index);
-                List<User> updatedUsers = new ArrayList<>(channel.getUsers());
-                updatedUsers.add(userToAdd);
-                Channel updatedChannel = new Channel(channel.getUuid(), channel.getCreator(), channel.getName(), updatedUsers);
-                dataManager.sendChannel(updatedChannel);
+        // Membres retirables = membres sauf le créateur
+        User creator = channel.getCreator();
+        List<User> removableMembers = new ArrayList<>();
+        for (User member : members) {
+            if (!member.equals(creator)) {
+                removableMembers.add(member);
             }
         }
+
+        view.showMembersDialog(
+                channel.getName(),
+                removableMembers,
+                candidates,
+                userToAdd -> {
+                    List<User> updated = new ArrayList<>(channel.getUsers());
+                    updated.add(userToAdd);
+                    dataManager.sendChannel(new Channel(channel.getUuid(), creator, channel.getName(), updated));
+                },
+                userToRemove -> {
+                    List<User> updated = new ArrayList<>(channel.getUsers());
+                    updated.remove(userToRemove);
+                    dataManager.sendChannel(new Channel(channel.getUuid(), creator, channel.getName(), updated));
+                }
+        );
     }
 
     @Override

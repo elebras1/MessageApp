@@ -2,6 +2,7 @@ package com.elebras1.message.controller;
 
 import com.elebras1.message.core.DataManager;
 import com.elebras1.message.core.database.IDatabaseObserver;
+import com.elebras1.message.core.session.ISession;
 import com.elebras1.message.datamodel.Channel;
 import com.elebras1.message.datamodel.Message;
 import com.elebras1.message.datamodel.User;
@@ -15,17 +16,13 @@ import java.util.*;
 public class MessagesController implements IMessagesController, ISelectionObserver, IDatabaseObserver {
     private final DataManager dataManager;
     private final MessagesView view;
-    private User connectedUser;
+    private final ISession session;
     private UUID currentRecipientUuid;
 
-    public MessagesController(DataManager dataManager, MessagesView view) {
+    public MessagesController(DataManager dataManager, ISession session, MessagesView view) {
         this.dataManager = dataManager;
+        this.session = session;
         this.view = view;
-    }
-
-    @Override
-    public void setConnectedUser(User connectedUser) {
-        this.connectedUser = connectedUser;
     }
 
     @Override
@@ -44,8 +41,8 @@ public class MessagesController implements IMessagesController, ISelectionObserv
         if (channel != null) {
             conversation.addAll(dataManager.getMessagesTo(recipientUuid));
         } else {
-            conversation.addAll(dataManager.getMessagesFrom(connectedUser.getUuid(), recipientUuid));
-            conversation.addAll(dataManager.getMessagesTo(connectedUser.getUuid(), recipientUuid));
+            conversation.addAll(dataManager.getMessagesFrom(this.session.getConnectedUser().getUuid(), recipientUuid));
+            conversation.addAll(dataManager.getMessagesTo(this.session.getConnectedUser().getUuid(), recipientUuid));
         }
 
         conversation.sort(Comparator.comparing(Message::getEmissionDate));
@@ -60,21 +57,22 @@ public class MessagesController implements IMessagesController, ISelectionObserv
         if (text == null || text.trim().isEmpty()) {
             return;
         }
-        if (connectedUser == null || currentRecipientUuid == null) {
+        if (this.session.getConnectedUser() == null || currentRecipientUuid == null) {
             return;
         }
 
-        Message message = new Message(connectedUser, currentRecipientUuid, text.trim());
+        Message message = new Message(this.session.getConnectedUser(), currentRecipientUuid, text.trim());
         dataManager.sendMessage(message);
     }
 
     @Override
     public void notifyMessageAdded(Message addedMessage) {
-        if (currentRecipientUuid == null || connectedUser == null) return;
+        if (currentRecipientUuid == null || this.session.getConnectedUser() == null) {
+            return;
+        }
 
         boolean isChannelMessage = addedMessage.getRecipient().equals(currentRecipientUuid);
-        boolean isDirectMessage = addedMessage.getRecipient().equals(connectedUser.getUuid())
-                && addedMessage.getSender().getUuid().equals(currentRecipientUuid);
+        boolean isDirectMessage = addedMessage.getRecipient().equals(this.session.getConnectedUser().getUuid()) && addedMessage.getSender().getUuid().equals(currentRecipientUuid);
 
         if (isChannelMessage || isDirectMessage) {
             SwingUtilities.invokeLater(() -> this.loadMessagesByRecipientUuid(currentRecipientUuid));
