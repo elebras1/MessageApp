@@ -1,5 +1,7 @@
 package com.elebras1.message.ihm.view;
 
+import com.elebras1.message.ihm.view.callback.OnClickUuidCallback;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

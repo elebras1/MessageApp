@@ -1,5 +1,7 @@
 package com.elebras1.message.ihm.view;
 
+import com.elebras1.message.ihm.view.callback.OnClickUuidCallback;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.UUID;
