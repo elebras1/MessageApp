@@ -47,9 +47,7 @@ public class MessagesView extends JPanel {
         this.listElementView.clearContent();
         String lowerQuery = query.toLowerCase().trim();
         for (MessageView messageView : allMessages) {
-            if (lowerQuery.isEmpty()
-                    || messageView.getContent().toLowerCase().contains(lowerQuery)
-                    || messageView.getMetadata().toLowerCase().contains(lowerQuery)) {
+            if (lowerQuery.isEmpty() || messageView.getContent().toLowerCase().contains(lowerQuery) || messageView.getMetadata().toLowerCase().contains(lowerQuery)) {
                 this.listElementView.addContent(messageView);
             }
         }
@@ -74,9 +72,7 @@ public class MessagesView extends JPanel {
     public void addMessage(MessageView messageView) {
         this.allMessages.add(messageView);
         String query = this.searchBar.getText();
-        if (query.isEmpty()
-                || messageView.getContent().toLowerCase().contains(query.toLowerCase())
-                || messageView.getMetadata().toLowerCase().contains(query.toLowerCase())) {
+        if (query.isEmpty() || messageView.getContent().toLowerCase().contains(query.toLowerCase()) || messageView.getMetadata().toLowerCase().contains(query.toLowerCase())) {
             this.listElementView.addContent(messageView);
         }
     }

@@ -12,6 +12,8 @@ import com.elebras1.message.util.StringUtils;
 
 import javax.swing.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MessagesController implements IMessagesController, ISelectionObserver, IDatabaseObserver {
     private final DataManager dataManager;
@@ -71,12 +73,23 @@ public class MessagesController implements IMessagesController, ISelectionObserv
             return;
         }
 
+        List<String> userTags = this.extractTags(addedMessage.getText());
+
         boolean isChannelMessage = addedMessage.getRecipient().equals(currentRecipientUuid);
         boolean isDirectMessage = addedMessage.getRecipient().equals(this.session.getConnectedUser().getUuid()) && addedMessage.getSender().getUuid().equals(currentRecipientUuid);
 
         if (isChannelMessage || isDirectMessage) {
             SwingUtilities.invokeLater(() -> this.loadMessagesByRecipientUuid(currentRecipientUuid));
         }
+    }
+
+    private List<String> extractTags(String text) {
+        List<String> tags = new ArrayList<>();
+        Matcher matcher = Pattern.compile("@(\\w+)").matcher(text);
+        while (matcher.find()) {
+            tags.add(matcher.group(1));
+        }
+        return tags;
     }
 
     @Override

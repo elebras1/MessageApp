@@ -30,20 +30,26 @@ public class BubbleTextEditableView extends JPanel {
 
         ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new DocumentFilter() {
             @Override
-            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
-                    throws BadLocationException {
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
                 int remaining = maxCharacters - fb.getDocument().getLength();
-                if (remaining <= 0 || string == null) return;
-                if (string.length() > remaining) string = string.substring(0, remaining);
+                if (remaining <= 0 || string == null) {
+                    return;
+                }
+                if (string.length() > remaining) {
+                    string = string.substring(0, remaining);
+                }
                 super.insertString(fb, offset, string, attr);
             }
 
             @Override
-            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
-                    throws BadLocationException {
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
                 int remaining = maxCharacters - (fb.getDocument().getLength() - length);
-                if (remaining <= 0 || text == null) return;
-                if (text.length() > remaining) text = text.substring(0, remaining);
+                if (remaining <= 0 || text == null) {
+                    return;
+                }
+                if (text.length() > remaining) {
+                    text = text.substring(0, remaining);
+                }
                 super.replace(fb, offset, length, text, attrs);
             }
         });
