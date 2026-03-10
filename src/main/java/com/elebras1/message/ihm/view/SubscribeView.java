@@ -85,7 +85,25 @@ public class SubscribeView extends JPanel {
         ));
 
         JButton subscribeButton = new JButton("Subscribe");
-        subscribeButton.addActionListener(_ -> controller.subscribe(this.usernameField.getText().trim(), this.tagField.getText().trim(), new String(this.passwordField.getPassword()).trim()));
+        subscribeButton.addActionListener(_ -> {
+            String username = this.usernameField.getText().trim();
+            String tag = this.tagField.getText().trim();
+            String password = new String(this.passwordField.getPassword()).trim();
+
+            try {
+                controller.subscribe(username, tag, password);
+                JOptionPane.showMessageDialog(this,
+                        "Inscription réussie !",
+                        "Succès",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(this,
+                        exception.getMessage(),
+                        "Erreur d'inscription",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
         this.add(subscribeButton, new GridBagConstraints(
                 0, 4, 2, 1,
                 0.0, 0.0,

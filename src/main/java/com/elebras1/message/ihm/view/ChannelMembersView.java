@@ -68,7 +68,6 @@ public class ChannelMembersView extends JDialog {
 
         root.add(body, BorderLayout.CENTER);
 
-        // ── Bouton fermer ──
         JButton closeBtn = styledButton("Fermer", ACCENT_COLOR, Color.BLACK);
         closeBtn.addActionListener(_ -> dispose());
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));

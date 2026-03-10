@@ -2,6 +2,7 @@ package com.elebras1.message.controller;
 
 import com.elebras1.message.core.DataManager;
 import com.elebras1.message.datamodel.User;
+import com.elebras1.message.exception.RegistrationException;
 
 import java.util.Set;
 
@@ -13,21 +14,19 @@ public class SubscribeController implements ISubscribeController {
     }
 
     @Override
-    public void subscribe(String username, String tag, String password) {
+    public void subscribe(String username, String tag, String password) throws RegistrationException {
         if (username.isEmpty() || tag.isEmpty() || password.isEmpty()) {
-            System.out.println("Tous les champs doivent être remplis.");
-            return;
+            throw new RegistrationException("Tous les champs doivent être remplis.");
+        }
+
+        Set<User> users = dataManager.getUsers();
+        for (User user : users) {
+            if (user.getUserTag().equals(tag)) {
+                throw new RegistrationException("Ce tag est déjà utilisé.");
+            }
         }
 
         User userToSubscribe = new User(tag, password, username);
-
-        Set<User> users = dataManager.getUsers();
-        for(User user : users) {
-            if(user.getUserTag().equals(tag)) {
-                System.out.println("Ce tag est déjà utilisé.");
-                return;
-            }
-        }
         this.dataManager.sendUser(userToSubscribe);
     }
 }
