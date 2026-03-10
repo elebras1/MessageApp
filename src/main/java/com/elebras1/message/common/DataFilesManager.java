@@ -136,6 +136,19 @@ public class DataFilesManager {
 	}
 
 	/**
+	 * Suppression du fichier correspondant à un utilisateur ({@link User}).
+	 *
+	 * @param user Utilisateur à supprimer.
+	 */
+	public void deleteUserFile(User user) {
+		String fileName = this.getFileName(user.getUuid(), Constants.USER_FILE_EXTENSION);
+		File file = new File(fileName);
+		if (file.exists()) {
+			file.delete();
+		}
+	}
+
+	/**
 	 * Génération d'un fichier pour un utilisateur ({@link User}).
 	 *
 	 * @param channel Utilisateur à générer.

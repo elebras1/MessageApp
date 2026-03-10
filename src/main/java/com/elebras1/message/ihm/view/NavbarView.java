@@ -12,6 +12,8 @@ public class NavbarView extends JPanel implements ISessionObserver {
     private JButton subscribeButton;
     private JButton loginButton;
     private JButton logoutButton;
+    private JButton renameButton;
+    private JButton deleteAccountButton;
 
     public NavbarView(INavBarController viewManager) {
         this.viewManager = viewManager;
@@ -39,9 +41,34 @@ public class NavbarView extends JPanel implements ISessionObserver {
         logoutButton.addActionListener(_ -> this.viewManager.logout());
         logoutButton.setVisible(false);
 
+        renameButton = new JButton("Rename");
+        renameButton.setBackground(new Color(0xFDB92E));
+        renameButton.setBorderPainted(false);
+        renameButton.addActionListener(_ -> this.viewManager.showEditProfilView());
+        renameButton.setVisible(false);
+
+        deleteAccountButton = new JButton("Delete Account");
+        deleteAccountButton.setBackground(new Color(0xF85E5E));
+        deleteAccountButton.setBorderPainted(false);
+        deleteAccountButton.addActionListener(_ -> {
+            int result = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to delete your account? This action cannot be undone.",
+                    "Confirm Account Deletion",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+            if (result == JOptionPane.YES_OPTION) {
+                this.viewManager.removeUser();
+            }
+        });
+        deleteAccountButton.setVisible(false);
+
         this.add(loginButton);
         this.add(subscribeButton);
         this.add(logoutButton);
+        this.add(renameButton);
+        this.add(deleteAccountButton);
     }
 
     @Override
@@ -49,6 +76,8 @@ public class NavbarView extends JPanel implements ISessionObserver {
         this.loginButton.setVisible(false);
         this.subscribeButton.setVisible(false);
         this.logoutButton.setVisible(true);
+        this.renameButton.setVisible(true);
+        this.deleteAccountButton.setVisible(true);
     }
 
     @Override
@@ -56,5 +85,7 @@ public class NavbarView extends JPanel implements ISessionObserver {
         this.loginButton.setVisible(true);
         this.subscribeButton.setVisible(true);
         this.logoutButton.setVisible(false);
+        this.renameButton.setVisible(false);
+        this.deleteAccountButton.setVisible(false);
     }
 }

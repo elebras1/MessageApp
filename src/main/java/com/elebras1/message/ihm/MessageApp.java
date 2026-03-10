@@ -80,13 +80,16 @@ public class MessageApp {
 		this.loginController = new LoginController(this.mDataManager, this.session);
 		this.subscribeView = new SubscribeView(this.subscribeController);
 		this.loginView = new LoginView(this.loginController);
+		EditProfilController editProfilController = new EditProfilController(this.mDataManager, this.session);
+		EditProfilView editProfilView = new EditProfilView(editProfilController);
+		RemoveUserController removeUserController = new RemoveUserController(this.session, this.mDataManager);
 		LogoutController logoutController = new LogoutController(this.session);
-		this.navBarController = new NavBarController(this.mMainView, this.subscribeView, this.loginView, logoutController);
+		this.navBarController = new NavBarController(this.mMainView, this.subscribeView, this.loginView, editProfilView, logoutController, removeUserController);
 		this.navbarView = new NavbarView(this.navBarController);
 		this.mMainView.setNavbarView(this.navbarView);
 
 		ChatView chatView = new ChatView();
-		ISessionObserver chatController = new ChatController(chatView, this.mDataManager, this.session, this.mMainView);
+		ChatController chatController = new ChatController(chatView, this.mDataManager, this.session, this.mMainView);
 		this.session.addObserver(chatController);
 		this.session.addObserver(navbarView);
 	}

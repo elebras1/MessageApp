@@ -65,7 +65,17 @@ public class LoginView extends JPanel {
         ));
 
         JButton loginButton = new JButton("Login");
-        loginButton.addActionListener(_ -> controller.login(this.tagField.getText().trim(), new String(this.passwordField.getPassword()).trim()));
+        loginButton.addActionListener(_ -> {
+            String tag = this.tagField.getText().trim();
+            String password = new String(this.passwordField.getPassword()).trim();
+
+            try {
+                controller.login(tag, password);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Erreur de connexion", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
         this.add(loginButton, new GridBagConstraints(
                 0, 4, 2, 1,
                 0.0, 0.0,

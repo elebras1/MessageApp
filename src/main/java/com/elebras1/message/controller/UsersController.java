@@ -78,7 +78,9 @@ public class UsersController implements IUsersController, ISelectionObservable, 
 
     @Override
     public void notifyUserDeleted(User deletedUser) {
-        SwingUtilities.invokeLater(this::loadUsers);
+        if(this.session.getConnectedUser() != null) {
+            SwingUtilities.invokeLater(this::loadUsers);
+        }
     }
 
     @Override

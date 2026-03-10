@@ -140,6 +140,17 @@ public class DataManager {
 		return userMessages;
 	}
 
+	/**
+	 * Supprimer un Utilisateur.
+	 *
+	 * @param senderUuid
+	 * @param recipientUuid
+	 * @return
+	 */
+	public void deleteUser(User user) {
+		this.mEntityManager.deleteUserFile(user);
+	}
+
 	public Set<Message> getMessagesFrom(UUID senderUuid, UUID recipientUuid) {
 		Set<Message> userMessages = new HashSet<>();
 		for (Message message : this.getMessagesFrom(senderUuid)) {
