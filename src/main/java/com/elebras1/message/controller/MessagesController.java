@@ -9,6 +9,7 @@ import com.elebras1.message.ihm.view.MessageView;
 import com.elebras1.message.ihm.view.MessagesView;
 import com.elebras1.message.util.StringUtils;
 
+import javax.swing.*;
 import java.util.*;
 
 public class MessagesController implements IMessagesController, ISelectionObserver, IDatabaseObserver {
@@ -29,7 +30,7 @@ public class MessagesController implements IMessagesController, ISelectionObserv
 
     @Override
     public void onRecipientSelected(UUID recipientUuid) {
-        loadMessagesByRecipientUuid(recipientUuid);
+        SwingUtilities.invokeLater(() -> loadMessagesByRecipientUuid(recipientUuid));
     }
 
     @Override
@@ -38,8 +39,14 @@ public class MessagesController implements IMessagesController, ISelectionObserv
         view.clearMessages();
 
         List<Message> conversation = new ArrayList<>();
-        conversation.addAll(dataManager.getMessagesFrom(connectedUser.getUuid(), recipientUuid));
-        conversation.addAll(dataManager.getMessagesTo(connectedUser.getUuid(), recipientUuid));
+
+        Channel channel = dataManager.getChannel(recipientUuid);
+        if (channel != null) {
+            conversation.addAll(dataManager.getMessagesTo(recipientUuid));
+        } else {
+            conversation.addAll(dataManager.getMessagesFrom(connectedUser.getUuid(), recipientUuid));
+            conversation.addAll(dataManager.getMessagesTo(connectedUser.getUuid(), recipientUuid));
+        }
 
         conversation.sort(Comparator.comparing(Message::getEmissionDate));
 
@@ -63,8 +70,14 @@ public class MessagesController implements IMessagesController, ISelectionObserv
 
     @Override
     public void notifyMessageAdded(Message addedMessage) {
-        if(addedMessage.getRecipient().equals(currentRecipientUuid)) {
-            this.loadMessagesByRecipientUuid(currentRecipientUuid);
+        if (currentRecipientUuid == null || connectedUser == null) return;
+
+        boolean isChannelMessage = addedMessage.getRecipient().equals(currentRecipientUuid);
+        boolean isDirectMessage = addedMessage.getRecipient().equals(connectedUser.getUuid())
+                && addedMessage.getSender().getUuid().equals(currentRecipientUuid);
+
+        if (isChannelMessage || isDirectMessage) {
+            SwingUtilities.invokeLater(() -> this.loadMessagesByRecipientUuid(currentRecipientUuid));
         }
     }
 

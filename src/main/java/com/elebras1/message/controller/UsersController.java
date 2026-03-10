@@ -8,6 +8,7 @@ import com.elebras1.message.datamodel.User;
 import com.elebras1.message.ihm.view.BubbleTextIdentifyView;
 import com.elebras1.message.ihm.view.ListElementView;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,10 +41,11 @@ public class UsersController implements IUsersController, ISelectionObservable, 
 
     @Override
     public void loadUsers() {
+        view.clearContent();
         List<User> allUsers = new ArrayList<>(dataManager.getUsers());
         for (User user : allUsers) {
             BubbleTextIdentifyView bubble = new BubbleTextIdentifyView(user.getUuid(), user.getName());
-            bubble.addOnClickListener(this::notifyRecipientSelected);
+            bubble.setOnClickCallback(this::notifyRecipientSelected);
             view.addContent(bubble);
         }
     }
@@ -65,17 +67,17 @@ public class UsersController implements IUsersController, ISelectionObservable, 
 
     @Override
     public void notifyUserAdded(User addedUser) {
-        this.loadUsers();
+        SwingUtilities.invokeLater(this::loadUsers);
     }
 
     @Override
     public void notifyUserDeleted(User deletedUser) {
-        this.loadUsers();
+        SwingUtilities.invokeLater(this::loadUsers);
     }
 
     @Override
     public void notifyUserModified(User modifiedUser) {
-        this.loadUsers();
+        SwingUtilities.invokeLater(this::loadUsers);
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.elebras1.message.datamodel.User;
 import com.elebras1.message.ihm.MessageApp;
 import com.elebras1.mock.MessageAppMock;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -27,6 +28,11 @@ public class MessageAppLauncher {
 	protected static boolean IS_MOCK_ENABLED = true;
 
 	/**
+	 * Chemin du répertoire d'échanges.
+	 */
+	private static final String EXCHANGE_DIR = "C:/Users/erwan/Documents/dev/repertoire_echanges";
+
+	/**
 	 * Launcher.
 	 *
 	 * @param args
@@ -34,31 +40,49 @@ public class MessageAppLauncher {
 	public static void main(String[] args) {
 
 		Database database = new Database();
-
 		EntityManager entityManager = new EntityManager(database);
-
 		DbConnector dbConnector = new DbConnector(database);
 
 		DataManager dataManager = new DataManager(database, entityManager);
-		dataManager.setExchangeDirectory("C:/Users/erwan/Documents/dev/repertoire_echanges");
+		dataManager.setExchangeDirectory(EXCHANGE_DIR);
 
 		DatabaseObserver observer = new DatabaseObserver();
-
 		dataManager.addObserver(observer);
-
 
 		if (IS_MOCK_ENABLED) {
 			MessageAppMock mock = new MessageAppMock(dbConnector, dataManager);
 			mock.showGUI();
 		}
 
-		Session session = new Session();
+		// Vérification : On injecte les données de test UNIQUEMENT si le dossier est vide
+		if (isExchangeDirectoryEmpty(EXCHANGE_DIR)) {
+			System.out.println("Répertoire d'échange vide. Injection des données de test...");
+			mockData(dataManager);
+		} else {
+			System.out.println("Données existantes détectées dans le répertoire. Pas d'injection de mockData.");
+		}
 
-		mockData(dataManager);
+		Session session = new Session();
 
 		MessageApp messageApp = new MessageApp(dataManager, session);
 		messageApp.init();
 		messageApp.show();
+	}
+
+	/**
+	 * Vérifie si le répertoire spécifié est vide, n'existe pas ou n'est pas un dossier.
+	 * * @param path Chemin du répertoire à vérifier.
+	 * @return true si le répertoire est vide ou absent, false sinon.
+	 */
+	private static boolean isExchangeDirectoryEmpty(String path) {
+		File directory = new File(path);
+
+		if (!directory.exists() || !directory.isDirectory()) {
+			return true;
+		}
+
+		String[] files = directory.list();
+		return (files == null || files.length == 0);
 	}
 
 	private static void mockData(DataManager dataManager) {
@@ -67,8 +91,10 @@ public class MessageAppLauncher {
 		User charlie = new User("charlie", "pass789", "Charlie Durand");
 		User diana = new User("diana", "passabc", "Diana Leroy");
 		User user = new User("user", "user", "User Test");
-		if(dataManager.getUsers().contains(alice) || dataManager.getUsers().contains(bob) || dataManager.getUsers().contains(charlie) || dataManager.getUsers().contains(diana) || dataManager.getUsers().contains(user)) {
-			System.out.println("Les utilisateurs de test existent déjà, pas de doublons créés.");
+
+		// Sécurité supplémentaire : vérification en mémoire
+		if(dataManager.getUsers().contains(alice) || dataManager.getUsers().contains(bob)) {
+			System.out.println("Les utilisateurs de test existent déjà en base, arrêt de l'injection.");
 			return;
 		}
 

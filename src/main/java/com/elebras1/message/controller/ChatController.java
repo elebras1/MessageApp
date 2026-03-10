@@ -4,10 +4,7 @@ import com.elebras1.message.core.DataManager;
 import com.elebras1.message.core.session.ISession;
 import com.elebras1.message.core.session.ISessionObserver;
 import com.elebras1.message.datamodel.User;
-import com.elebras1.message.ihm.view.ChatView;
-import com.elebras1.message.ihm.view.ListElementView;
-import com.elebras1.message.ihm.view.MessageAppMainView;
-import com.elebras1.message.ihm.view.MessagesView;
+import com.elebras1.message.ihm.view.*;
 
 public class ChatController implements IChatController, ISessionObserver {
     private final ChatView view;
@@ -39,7 +36,7 @@ public class ChatController implements IChatController, ISessionObserver {
         dataManager.addObserver(listUserController);
         view.setLeftUpSection(usersView);
 
-        ListElementView channelView = new ListElementView();
+        ChannelsView channelView = new ChannelsView();
         ChannelsController listChannelController = new ChannelsController(dataManager,  session, channelView);
         listChannelController.addSelectionObserver(listMessageController);
         listChannelController.loadChannels(connectedUser);
