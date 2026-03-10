@@ -6,7 +6,10 @@ import java.awt.*;
 
 public class BubbleTextView extends JPanel {
 
+    private final String text;
+
     public BubbleTextView(String content) {
+        this.text = content;
         setLayout(new BorderLayout());
         setBackground(new Color(0x71FFFF));
         setBorder(BorderFactory.createCompoundBorder(
@@ -16,5 +19,9 @@ public class BubbleTextView extends JPanel {
 
         JLabel label = new JLabel(content);
         add(label, BorderLayout.CENTER);
+    }
+
+    public String getText() {
+        return text;
     }
 }

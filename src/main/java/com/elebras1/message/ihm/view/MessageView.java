@@ -5,7 +5,12 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class MessageView extends JPanel {
+    private final String content;
+    private final String metadata;
+
     public MessageView(String content, String metadata) {
+        this.content = content;
+        this.metadata = metadata;
         setLayout(new BorderLayout());
         setOpaque(false);
 
@@ -18,5 +23,13 @@ public class MessageView extends JPanel {
 
         add(metadataLabel, BorderLayout.NORTH);
         add(bubble, BorderLayout.CENTER);
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getMetadata() {
+        return metadata;
     }
 }

@@ -8,8 +8,10 @@ import java.util.UUID;
 
 public class ChannelView extends JPanel {
     private final BubbleTextIdentifyView bubble;
+    private final String channelName;
 
     public ChannelView(UUID id, String channelName, boolean isCreator, boolean isPrivate, OnClickUuidCallback onRemove, OnClickUuidCallback onAddMember) {
+        this.channelName = channelName;
         this.setLayout(new BorderLayout(4, 0));
         this.setOpaque(false);
 
@@ -63,5 +65,9 @@ public class ChannelView extends JPanel {
 
     public void setOnClickCallback(OnClickUuidCallback callback) {
         this.bubble.setOnClickCallback(callback);
+    }
+
+    public String getChannelName() {
+        return channelName;
     }
 }

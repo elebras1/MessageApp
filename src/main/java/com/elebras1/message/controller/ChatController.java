@@ -28,7 +28,7 @@ public class ChatController implements IChatController, ISessionObserver {
         messagesView.setSendAction(listMessageController::sendMessage);
         view.setRightSection(messagesView);
 
-        ListElementView usersView = new ListElementView();
+        UsersView usersView = new UsersView();
         UsersController listUserController = new UsersController(dataManager, session, usersView);
         listUserController.addSelectionObserver(listMessageController);
         listUserController.loadUsers();

@@ -8,6 +8,7 @@ import com.elebras1.message.datamodel.Message;
 import com.elebras1.message.datamodel.User;
 import com.elebras1.message.ihm.view.BubbleTextIdentifyView;
 import com.elebras1.message.ihm.view.ListElementView;
+import com.elebras1.message.ihm.view.UsersView;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -16,13 +17,14 @@ import java.util.List;
 public class UsersController implements IUsersController, ISelectionObservable, IDatabaseObserver {
     private final DataManager dataManager;
     private final ISession session;
-    private final ListElementView view;
-    private final List<ISelectionObserver> observers = new ArrayList<>();
+    private final UsersView view;
+    private final List<ISelectionObserver> observers;
 
-    public UsersController(DataManager dataManager, ISession session, ListElementView view) {
+    public UsersController(DataManager dataManager, ISession session, UsersView view) {
         this.dataManager = dataManager;
         this.session = session;
         this.view = view;
+        this.observers = new ArrayList<>();
     }
 
     @Override
@@ -44,15 +46,15 @@ public class UsersController implements IUsersController, ISelectionObservable, 
 
     @Override
     public void loadUsers() {
-        view.clearContent();
+        view.clearUsers();
         List<User> allUsers = new ArrayList<>(dataManager.getUsers());
         for (User user : allUsers) {
             if(user.getUuid().equals(session.getConnectedUser().getUuid())) {
                 continue;
             }
-            BubbleTextIdentifyView bubble = new BubbleTextIdentifyView(user.getUuid(), user.getName());
+            BubbleTextIdentifyView bubble = new BubbleTextIdentifyView(user.getUuid(), user.getName() + " (@" + user.getUserTag() + ")");
             bubble.setOnClickCallback(this::notifyRecipientSelected);
-            view.addContent(bubble);
+            view.addUser(bubble);
         }
     }
 
