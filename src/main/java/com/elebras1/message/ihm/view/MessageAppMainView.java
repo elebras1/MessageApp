@@ -24,8 +24,8 @@ public class MessageAppMainView extends JFrame {
         this.getContentPane().setLayout(new BorderLayout());
     }
 
-    public void setNavbarView(NavbarView navbarView) {
-        this.getContentPane().add(navbarView, BorderLayout.SOUTH);
+    public void setNavbarView(UserToolBarView userToolBarView) {
+        this.getContentPane().add(userToolBarView, BorderLayout.SOUTH);
     }
 
     public void addPanel(JComponent panel) {

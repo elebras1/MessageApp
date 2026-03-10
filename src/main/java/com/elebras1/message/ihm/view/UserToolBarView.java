@@ -7,15 +7,16 @@ import com.elebras1.message.datamodel.User;
 import javax.swing.*;
 import java.awt.*;
 
-public class NavbarView extends JPanel implements ISessionObserver {
+public class UserToolBarView extends JPanel implements ISessionObserver {
     private final INavBarController viewManager;
     private JButton subscribeButton;
     private JButton loginButton;
     private JButton logoutButton;
     private JButton renameButton;
     private JButton deleteAccountButton;
+    private JLabel connectedUserLabel;
 
-    public NavbarView(INavBarController viewManager) {
+    public UserToolBarView(INavBarController viewManager) {
         this.viewManager = viewManager;
         this.initComponents();
     }
@@ -64,11 +65,17 @@ public class NavbarView extends JPanel implements ISessionObserver {
         });
         deleteAccountButton.setVisible(false);
 
+        connectedUserLabel = new JLabel();
+        connectedUserLabel.setForeground(new Color(0x333333));
+        connectedUserLabel.setFont(connectedUserLabel.getFont().deriveFont(Font.BOLD, 13f));
+        connectedUserLabel.setVisible(false);
+
         this.add(loginButton);
         this.add(subscribeButton);
         this.add(logoutButton);
         this.add(renameButton);
         this.add(deleteAccountButton);
+        this.add(connectedUserLabel);
     }
 
     @Override
@@ -78,6 +85,8 @@ public class NavbarView extends JPanel implements ISessionObserver {
         this.logoutButton.setVisible(true);
         this.renameButton.setVisible(true);
         this.deleteAccountButton.setVisible(true);
+        this.connectedUserLabel.setText("👤 " + connectedUser.getName() + " (@" + connectedUser.getUserTag() + ")");
+        this.connectedUserLabel.setVisible(true);
     }
 
     @Override
@@ -87,5 +96,7 @@ public class NavbarView extends JPanel implements ISessionObserver {
         this.logoutButton.setVisible(false);
         this.renameButton.setVisible(false);
         this.deleteAccountButton.setVisible(false);
+        this.connectedUserLabel.setText("");
+        this.connectedUserLabel.setVisible(false);
     }
 }

@@ -5,7 +5,7 @@ import com.elebras1.message.ihm.view.LoginView;
 import com.elebras1.message.ihm.view.MessageAppMainView;
 import com.elebras1.message.ihm.view.SubscribeView;
 
-public class NavBarController implements INavBarController {
+public class UserToolBarController implements INavBarController {
     private final MessageAppMainView mainView;
     private final SubscribeView subscribeView;
     private final LoginView loginView;
@@ -13,7 +13,7 @@ public class NavBarController implements INavBarController {
     private final ILogoutController logoutController;
     private final IRemoveUserController removeUserController;
 
-    public NavBarController(MessageAppMainView mainView, SubscribeView subscribeView, LoginView loginView, EditProfilView editProfilView, ILogoutController logoutController, IRemoveUserController removeUserController) {
+    public UserToolBarController(MessageAppMainView mainView, SubscribeView subscribeView, LoginView loginView, EditProfilView editProfilView, ILogoutController logoutController, IRemoveUserController removeUserController) {
         this.mainView = mainView;
         this.subscribeView = subscribeView;
         this.loginView = loginView;

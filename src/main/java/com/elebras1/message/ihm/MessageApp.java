@@ -4,7 +4,6 @@ import java.io.File;
 
 import com.elebras1.message.controller.*;
 import com.elebras1.message.core.DataManager;
-import com.elebras1.message.core.session.ISessionObserver;
 import com.elebras1.message.core.session.Session;
 import com.elebras1.message.ihm.view.*;
 
@@ -28,7 +27,7 @@ public class MessageApp {
 	private MessageAppMainView mMainView;
 	private SubscribeView subscribeView;
 	private LoginView loginView;
-	private NavbarView navbarView;
+	private UserToolBarView userToolBarView;
 	private INavBarController navBarController;
 	private ISubscribeController subscribeController;
 	private ILoginController loginController;
@@ -84,14 +83,14 @@ public class MessageApp {
 		EditProfilView editProfilView = new EditProfilView(editProfilController);
 		RemoveUserController removeUserController = new RemoveUserController(this.session, this.mDataManager);
 		LogoutController logoutController = new LogoutController(this.session);
-		this.navBarController = new NavBarController(this.mMainView, this.subscribeView, this.loginView, editProfilView, logoutController, removeUserController);
-		this.navbarView = new NavbarView(this.navBarController);
-		this.mMainView.setNavbarView(this.navbarView);
+		this.navBarController = new UserToolBarController(this.mMainView, this.subscribeView, this.loginView, editProfilView, logoutController, removeUserController);
+		this.userToolBarView = new UserToolBarView(this.navBarController);
+		this.mMainView.setNavbarView(this.userToolBarView);
 
 		ChatView chatView = new ChatView();
 		ChatController chatController = new ChatController(chatView, this.mDataManager, this.session, this.mMainView);
 		this.session.addObserver(chatController);
-		this.session.addObserver(navbarView);
+		this.session.addObserver(userToolBarView);
 	}
 
 	/**
