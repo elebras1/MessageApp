@@ -123,6 +123,19 @@ public class DataFilesManager {
 	}
 
 	/**
+	 * Suppression du fichier correspondant à un canal ({@link Channel}).
+	 *
+	 * @param channel Canal à supprimer.
+	 */
+	public void deleteChannelFile(Channel channel) {
+		String fileName = this.getFileName(channel.getUuid(), Constants.CHANNEL_FILE_EXTENSION);
+		File file = new File(fileName);
+		if (file.exists()) {
+			file.delete();
+		}
+	}
+
+	/**
 	 * Génération d'un fichier pour un utilisateur ({@link User}).
 	 *
 	 * @param channel Utilisateur à générer.

@@ -58,8 +58,17 @@ public class ChannelsController implements IChannelsController, ISelectionObserv
 
     private void onRemoveChannel(UUID channelUuid) {
         Channel channel = dataManager.getChannel(channelUuid);
-        channel.getUsers().remove(session.getConnectedUser());
-        dataManager.sendChannel(channel);
+        if (channel == null) return;
+
+        User connectedUser = session.getConnectedUser();
+        if (channel.getCreator().equals(connectedUser)) {
+            dataManager.deleteChannel(channel);
+        } else {
+            List<User> users = new ArrayList<>(channel.getUsers());
+            users.remove(connectedUser);
+            Channel updatedChannel = new Channel(channel.getUuid(), channel.getCreator(), channel.getName(), users);
+            dataManager.sendChannel(updatedChannel);
+        }
     }
 
     private void onCreateChannel(String channelName) {

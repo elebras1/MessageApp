@@ -464,4 +464,17 @@ public class EntityManager implements IWatchableDirectoryObserver {
 			throw new RuntimeException("Le répertoire d'échange n'est pas configuré !");
 		}
 	}
+
+	/**
+	 * Suppression du fichier correspondant à un canal.
+	 *
+	 * @param channel
+	 */
+	public void deleteChannelFile(Channel channel) {
+		if (mDirectoryPath != null) {
+			mDataFileManager.deleteChannelFile(channel);
+		} else {
+			throw new RuntimeException("Le répertoire d'échange n'est pas configuré !");
+		}
+	}
 }

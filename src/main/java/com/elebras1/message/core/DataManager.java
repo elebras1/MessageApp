@@ -121,6 +121,15 @@ public class DataManager {
 		this.mEntityManager.writeChannelFile(channel);
 	}
 
+	/**
+	 * Supprime un Canal.
+	 *
+	 * @param channel
+	 */
+	public void deleteChannel(Channel channel) {
+		this.mEntityManager.deleteChannelFile(channel);
+	}
+
 	public Set<Message> getMessagesFrom(UUID senderUuid) {
 		Set<Message> userMessages = new HashSet<>();
 		for (Message message : this.getMessages()) {
