@@ -86,7 +86,7 @@ public class MessageApp {
 		this.mMainView.setNavbarView(this.navbarView);
 
 		ChatView chatView = new ChatView();
-		ISessionObserver chatController = new ChatController(chatView, this.mDataManager, this.mMainView);
+		ISessionObserver chatController = new ChatController(chatView, this.mDataManager, this.session, this.mMainView);
 		this.session.addObserver(chatController);
 		this.session.addObserver(navbarView);
 	}

@@ -83,6 +83,15 @@ public class DataManager {
 		return this.mDatabase.getChannels();
 	}
 
+	public Channel getChannel(UUID channelUuid) {
+		for (Channel channel : this.getChannels()) {
+			if (channel.getUuid().equals(channelUuid)) {
+				return channel;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Ecrit un message.
 	 *

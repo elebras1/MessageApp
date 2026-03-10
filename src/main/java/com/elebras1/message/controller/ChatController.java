@@ -1,6 +1,7 @@
 package com.elebras1.message.controller;
 
 import com.elebras1.message.core.DataManager;
+import com.elebras1.message.core.session.ISession;
 import com.elebras1.message.core.session.ISessionObserver;
 import com.elebras1.message.datamodel.User;
 import com.elebras1.message.ihm.view.ChatView;
@@ -11,12 +12,14 @@ import com.elebras1.message.ihm.view.MessagesView;
 public class ChatController implements IChatController, ISessionObserver {
     private final ChatView view;
     private final DataManager dataManager;
+    private final ISession session;
     private final MessageAppMainView mainView;
 
 
-    public ChatController(ChatView view, DataManager dataManager, MessageAppMainView mainView) {
+    public ChatController(ChatView view, DataManager dataManager, ISession session, MessageAppMainView mainView) {
         this.view = view;
         this.dataManager = dataManager;
+        this.session = session;
         this.mainView = mainView;
     }
 
@@ -24,20 +27,23 @@ public class ChatController implements IChatController, ISessionObserver {
     public void notifyLogin(User connectedUser) {
         MessagesView messagesView = new MessagesView();
         MessagesController listMessageController = new MessagesController(dataManager, messagesView);
-        listMessageController.loadMessages(connectedUser);
+        listMessageController.setConnectedUser(connectedUser);
+        dataManager.addObserver(listMessageController);
         messagesView.setSendAction(listMessageController::sendMessage);
         view.setRightSection(messagesView);
 
         ListElementView usersView = new ListElementView();
         UsersController listUserController = new UsersController(dataManager, usersView);
-        listUserController.addChatObserver(listMessageController);
-        listUserController.loadUsers(connectedUser);
+        listUserController.addSelectionObserver(listMessageController);
+        listUserController.loadUsers();
+        dataManager.addObserver(listUserController);
         view.setLeftUpSection(usersView);
 
         ListElementView channelView = new ListElementView();
-        ChannelsController listChannelController = new ChannelsController(dataManager, channelView);
-        listChannelController.addChatObserver(listMessageController);
+        ChannelsController listChannelController = new ChannelsController(dataManager,  session, channelView);
+        listChannelController.addSelectionObserver(listMessageController);
         listChannelController.loadChannels(connectedUser);
+        dataManager.addObserver(listChannelController);
         view.setLeftDownSection(channelView);
 
         mainView.addPanel(view);
