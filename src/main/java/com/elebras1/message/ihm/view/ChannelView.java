@@ -9,7 +9,7 @@ import java.util.UUID;
 public class ChannelView extends JPanel {
     private final BubbleTextIdentifyView bubble;
 
-    public ChannelView(UUID id, String channelName, boolean isCreator, OnClickUuidCallback onRemove, OnClickUuidCallback onAddMember) {
+    public ChannelView(UUID id, String channelName, boolean isCreator, boolean isPrivate, OnClickUuidCallback onRemove, OnClickUuidCallback onAddMember) {
         this.setLayout(new BorderLayout(4, 0));
         this.setOpaque(false);
 
@@ -19,7 +19,7 @@ public class ChannelView extends JPanel {
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 0));
         buttonsPanel.setOpaque(false);
 
-        if (isCreator) {
+        if (isCreator && isPrivate) {
             JButton addMemberBtn = new JButton("+");
             addMemberBtn.setMargin(new Insets(2, 6, 2, 6));
             addMemberBtn.setBackground(new Color(0x2ECC71));
@@ -30,13 +30,16 @@ public class ChannelView extends JPanel {
             buttonsPanel.add(addMemberBtn);
         }
 
-        JButton removeChannel = new JButton("x");
-        removeChannel.setMargin(new Insets(2, 6, 2, 6));
-        removeChannel.setBackground(new Color(0x002CFF));
-        removeChannel.setBorderPainted(false);
-        removeChannel.setOpaque(true);
-        removeChannel.addActionListener(_ -> onRemove.onClick(this.bubble.getId()));
-        buttonsPanel.add(removeChannel);
+        if(isCreator || isPrivate) {
+            JButton removeChannel = new JButton("x");
+            removeChannel.setMargin(new Insets(2, 6, 2, 6));
+            removeChannel.setBackground(isCreator ? new Color(0xE74C3C) : new Color(0xFF8C00));
+            removeChannel.setBorderPainted(false);
+            removeChannel.setOpaque(true);
+            removeChannel.setToolTipText(isCreator ? "Supprimer le channel" : "Quitter le channel");
+            removeChannel.addActionListener(_ -> onRemove.onClick(this.bubble.getId()));
+            buttonsPanel.add(removeChannel);
+        }
 
         this.add(buttonsPanel, BorderLayout.EAST);
     }

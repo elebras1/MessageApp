@@ -1,21 +1,22 @@
 package com.elebras1.message.ihm.view;
 
+import com.elebras1.message.ihm.view.callback.OnCreateChannelCallback;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.function.Consumer;
 
 public class CreateChannelView extends JDialog {
 
-    private static final Color BG_COLOR = new Color(0xD06565);
-    private static final Color PANEL_COLOR = new Color(0x3C3C3C);
-    private static final Color ACCENT_COLOR = new Color(0xFDB92E);
-    private static final Color TEXT_COLOR = new Color(0xEEEEEE);
-    private static final Color ADD_COLOR = new Color(0x2ECC71);
+    private static final Color BG_COLOR      = new Color(0xD06565);
+    private static final Color PANEL_COLOR   = new Color(0x3C3C3C);
+    private static final Color ACCENT_COLOR  = new Color(0xFDB92E);
+    private static final Color TEXT_COLOR    = new Color(0xEEEEEE);
+    private static final Color ADD_COLOR     = new Color(0x2ECC71);
 
-    public CreateChannelView(Component parent, Consumer<String> onChannelNameChosen) {
+    public CreateChannelView(Component parent, OnCreateChannelCallback onChannelCreated) {
         super(SwingUtilities.getWindowAncestor(parent), "Créer un channel", ModalityType.APPLICATION_MODAL);
-        setSize(360, 200);
+        setSize(360, 240);
         setLocationRelativeTo(parent);
         setResizable(false);
         getContentPane().setBackground(BG_COLOR);
@@ -29,22 +30,39 @@ public class CreateChannelView extends JDialog {
         title.setFont(title.getFont().deriveFont(Font.BOLD, 15f));
         root.add(title, BorderLayout.NORTH);
 
-        JPanel center = new JPanel(new BorderLayout(0, 6));
+        JPanel center = new JPanel();
+        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
         center.setBackground(BG_COLOR);
-        JLabel label = new JLabel("Nom du channel :");
-        label.setForeground(TEXT_COLOR);
-        center.add(label, BorderLayout.NORTH);
+
+        JLabel nameLabel = new JLabel("Nom du channel :");
+        nameLabel.setForeground(TEXT_COLOR);
+        nameLabel.setAlignmentX(LEFT_ALIGNMENT);
+        center.add(nameLabel);
+        center.add(Box.createVerticalStrut(4));
 
         JTextField nameField = new JTextField();
         nameField.setBackground(PANEL_COLOR);
         nameField.setForeground(TEXT_COLOR);
         nameField.setCaretColor(TEXT_COLOR);
+        nameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
+        nameField.setAlignmentX(LEFT_ALIGNMENT);
         nameField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(ACCENT_COLOR, 1),
                 new EmptyBorder(4, 8, 4, 8)));
-        center.add(nameField, BorderLayout.CENTER);
+        center.add(nameField);
+        center.add(Box.createVerticalStrut(10));
+
+        // Checkbox "Privé" — cochée par défaut
+        JCheckBox privateCheck = new JCheckBox("Channel privé", true);
+        privateCheck.setBackground(BG_COLOR);
+        privateCheck.setForeground(TEXT_COLOR);
+        privateCheck.setFocusPainted(false);
+        privateCheck.setAlignmentX(LEFT_ALIGNMENT);
+        center.add(privateCheck);
+
         root.add(center, BorderLayout.CENTER);
 
+        // ── Footer ─────────────────────────────────────────────
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
         footer.setBackground(BG_COLOR);
 
@@ -55,7 +73,7 @@ public class CreateChannelView extends JDialog {
         createBtn.addActionListener(_ -> {
             String name = nameField.getText().trim();
             if (!name.isEmpty()) {
-                onChannelNameChosen.accept(name);
+                onChannelCreated.onCreate(name, privateCheck.isSelected());
                 dispose();
             } else {
                 nameField.setBorder(BorderFactory.createCompoundBorder(
@@ -89,4 +107,3 @@ public class CreateChannelView extends JDialog {
         return btn;
     }
 }
-

@@ -48,10 +48,10 @@ public class ChannelsController implements IChannelsController, ISelectionObserv
         List<Channel> allChannels = new ArrayList<>(dataManager.getChannels());
         view.clearChannels();
         for (Channel channel : allChannels) {
-            if (channel.getUsers().contains(connectedUser)) {
+            if (!channel.isPrivate() || channel.getUsers().contains(connectedUser)) {
                 boolean isCreator = channel.getCreator().equals(connectedUser);
                 ChannelView channelView = new ChannelView(
-                        channel.getUuid(), channel.getName(), isCreator,
+                        channel.getUuid(), channel.getName(), isCreator, channel.isPrivate(),
                         this::onRemoveChannel, this::onAddMemberRequested
                 );
                 channelView.setOnClickCallback(this::notifyRecipientSelected);
@@ -72,16 +72,16 @@ public class ChannelsController implements IChannelsController, ISelectionObserv
         } else {
             List<User> users = new ArrayList<>(channel.getUsers());
             users.remove(connectedUser);
-            dataManager.sendChannel(new Channel(channel.getUuid(), channel.getCreator(), channel.getName(), users));
+            dataManager.sendChannel(new Channel(channel.getUuid(), channel.getCreator(), channel.getName(), users, channel.isPrivate()));
         }
     }
 
-    private void onCreateChannel(String channelName) {
+    private void onCreateChannel(String channelName, boolean isPrivate) {
         if (channelName == null || channelName.trim().isEmpty()) {
             return;
         }
         User creator = session.getConnectedUser();
-        Channel channel = new Channel(creator, channelName.trim(), List.of(creator));
+        Channel channel = new Channel(creator, channelName.trim(), isPrivate);
         dataManager.sendChannel(channel);
     }
 
@@ -116,12 +116,12 @@ public class ChannelsController implements IChannelsController, ISelectionObserv
                 userToAdd -> {
                     List<User> updated = new ArrayList<>(channel.getUsers());
                     updated.add(userToAdd);
-                    dataManager.sendChannel(new Channel(channel.getUuid(), creator, channel.getName(), updated));
+                    dataManager.sendChannel(new Channel(channel.getUuid(), creator, channel.getName(), updated, channel.isPrivate()));
                 },
                 userToRemove -> {
                     List<User> updated = new ArrayList<>(channel.getUsers());
                     updated.remove(userToRemove);
-                    dataManager.sendChannel(new Channel(channel.getUuid(), creator, channel.getName(), updated));
+                    dataManager.sendChannel(new Channel(channel.getUuid(), creator, channel.getName(), updated, channel.isPrivate()));
                 }
         );
     }

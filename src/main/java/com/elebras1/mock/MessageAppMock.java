@@ -285,7 +285,7 @@ public class MessageAppMock {
 		User randomUser = new ArrayList<>(this.mDataManager.getUsers()).get(Math.max(0, userIndex - 1));
 
 		// Création d'un canal fictif
-		Channel newChannel = new Channel(randomUser, "Canal fictif");
+		Channel newChannel = new Channel(randomUser, "Canal fictif", false);
 
 		return newChannel;
 	}

@@ -1,6 +1,7 @@
 package com.elebras1.message.ihm.view;
 
 import com.elebras1.message.datamodel.User;
+import com.elebras1.message.ihm.view.callback.OnCreateChannelCallback;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,9 +23,9 @@ public class ChannelsView extends JPanel {
         this.add(this.channelsList, BorderLayout.CENTER);
     }
 
-    public void setOnAddChannelAction(Consumer<String> onChannelNameChosen) {
+    public void setOnAddChannelAction(OnCreateChannelCallback onChannelCreated) {
         this.addChannelButton.addActionListener(_ ->
-                new CreateChannelView(this, onChannelNameChosen).setVisible(true)
+                new CreateChannelView(this, onChannelCreated).setVisible(true)
         );
     }
 
@@ -40,5 +41,3 @@ public class ChannelsView extends JPanel {
         this.channelsList.addContent(channelView);
     }
 }
-
-

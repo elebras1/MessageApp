@@ -72,6 +72,11 @@ public class DataFilesManager {
 	protected static final String PROPERTY_KEY_CHANNEL_USERS = "Users";
 
 	/**
+	 * Clé du fichier de propriété pour l'attribut IsPrivate
+	 */
+	protected static final String PROPERTY_KEY_CHANNEL_IS_PRIVATE = "IsPrivate";
+
+	/**
 	 * Séparateur pour les utilisateurs.
 	 */
 	protected static final String USER_SEPARATOR = ";";
@@ -163,6 +168,7 @@ public class DataFilesManager {
 		properties.setProperty(PROPERTY_KEY_NAME, channel.getName());
 		properties.setProperty(PROPERTY_KEY_CHANNEL_CREATOR, channel.getCreator().getUuid().toString());
 		properties.setProperty(PROPERTY_KEY_CHANNEL_USERS, this.getUsersAsString(channel.getUsers()));
+		properties.setProperty(PROPERTY_KEY_CHANNEL_IS_PRIVATE, String.valueOf(channel.isPrivate()));
 
 		PropertiesManager.writeProperties(properties, destFileName);
 	}
@@ -186,10 +192,13 @@ public class DataFilesManager {
 					Constants.UNKNONWN_USER_UUID.toString());
 			String channelUsers = properties.getProperty(PROPERTY_KEY_CHANNEL_USERS, "");
 
+			String channelIsPrivate = properties.getProperty(PROPERTY_KEY_CHANNEL_IS_PRIVATE, "true");
+
 			User creator = getUserFromUuid(channelCreator, userMap);
 			List<User> allUsers = this.getUsersFromString(channelUsers, userMap);
+			boolean isPrivate = Boolean.parseBoolean(channelIsPrivate);
 
-			channel = new Channel(UUID.fromString(uuid), creator, channelName, allUsers);
+			channel = new Channel(UUID.fromString(uuid), creator, channelName, allUsers, isPrivate);
 		}
 
 		return channel;

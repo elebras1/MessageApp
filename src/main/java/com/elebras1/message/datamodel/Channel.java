@@ -36,51 +36,66 @@ public class Channel extends AbstractMessageAppObject implements IMessageRecipie
 	/**
 	 * Constructeur.
 	 *
-	 * @param sender utilisateur à l'origine du canal.
+	 * @param creator utilisateur à l'origine du canal.
 	 * @param name   Nom du canal.
 	 */
-	public Channel(User creator, String name) {
-		this(UUID.randomUUID(), creator, name);
+	public Channel(User creator, String name, boolean isPrivate) {
+		this(UUID.randomUUID(), creator, name, isPrivate);
 	}
 
 	/**
 	 * Constructeur.
 	 *
 	 * @param channelUuid identifiant du canal.
-	 * @param sender      utilisateur à l'origine du canal.
+	 * @param creator      utilisateur à l'origine du canal.
 	 * @param name        Nom du canal.
+	 * @param isPrivate   Statut privé ou public du canal.
 	 */
-	public Channel(UUID channelUuid, User creator, String name) {
+	public Channel(UUID channelUuid, User creator, String name, boolean isPrivate) {
 		super(channelUuid);
 		mCreator = creator;
 		mName = name;
+		mPrivate = isPrivate;
+		if (isPrivate) {
+			mUsers.add(creator);
+		}
 	}
 
 	/**
 	 * Constructeur pour un canal privé.
 	 *
-	 * @param sender utilisateur à l'origine du canal.
+	 * @param creator utilisateur à l'origine du canal.
 	 * @param name   Nom du canal.
+	 * @param users  Liste des utilisateurs du canal privé.
 	 */
 	public Channel(User creator, String name, List<User> users) {
 		this(UUID.randomUUID(), creator, name, users);
 	}
 
 	/**
-	 * Constructeur pour un canal privé.
+	 * Constructeur pour un canal avec liste d'utilisateurs et statut explicite.
 	 *
-	 * @param channelUuid identifiant du canal.
-	 * @param sender      utilisateur à l'origine du canal.
+	 * @param messageUuid identifiant du canal.
+	 * @param creator      utilisateur à l'origine du canal.
+	 * @param name        Nom du canal.
+	 * @param users       Liste des utilisateurs du canal.
+	 * @param isPrivate   Statut privé ou public du canal.
+	 */
+	public Channel(UUID messageUuid, User creator, String name, List<User> users, boolean isPrivate) {
+		this(messageUuid, creator, name, isPrivate);
+		mUsers.addAll(users);
+	}
+
+	/**
+	 * Constructeur pour un canal privé (rétrocompatibilité).
+	 *
+	 * @param messageUuid identifiant du canal.
+	 * @param creator      utilisateur à l'origine du canal.
 	 * @param name        Nom du canal.
 	 * @param users       Liste des utilisateurs du canal privé.
-	 * 
 	 */
 	public Channel(UUID messageUuid, User creator, String name, List<User> users) {
-		this(messageUuid, creator, name);
-		if (!users.isEmpty()) {
-			mPrivate = true;
-			mUsers.addAll(users);
-		}
+		this(messageUuid, creator, name, users, true);
 	}
 
 	/**
@@ -102,6 +117,13 @@ public class Channel extends AbstractMessageAppObject implements IMessageRecipie
 	 */
 	public List<User> getUsers() {
 		return new ArrayList<User>(mUsers);
+	}
+
+	/**
+	 * @return true si le canal est privé, false sinon.
+	 */
+	public boolean isPrivate() {
+		return mPrivate;
 	}
 
 	/**

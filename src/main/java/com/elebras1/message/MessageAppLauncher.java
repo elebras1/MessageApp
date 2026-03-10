@@ -117,8 +117,8 @@ public class MessageAppLauncher {
 
 		dataManager.sendMessage(new Message(alice, charlie.getUuid(), "Charlie, réunion déplacée à 16h."));
 
-		Channel general = new Channel(alice, "Général");
-		Channel dev = new Channel(bob, "Développement");
+		Channel general = new Channel(alice, "Général", false);
+		Channel dev = new Channel(bob, "Développement", false);
 		dataManager.sendChannel(general);
 		dataManager.sendChannel(dev);
 
@@ -143,7 +143,7 @@ public class MessageAppLauncher {
 		dataManager.sendMessage(new Message(diana, equipeRH.getUuid(), "Entretien de Bob planifié vendredi."));
 		dataManager.sendMessage(new Message(alice, equipeRH.getUuid(), "Reçu, je bloque le créneau."));
 
-		Channel annonces = new Channel(alice, "Annonces");
+		Channel annonces = new Channel(alice, "Annonces", false);
 		dataManager.sendChannel(annonces);
 	}
 }
