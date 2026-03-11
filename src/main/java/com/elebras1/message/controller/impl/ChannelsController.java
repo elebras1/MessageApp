@@ -1,5 +1,6 @@
 package com.elebras1.message.controller.impl;
 
+import com.elebras1.message.common.UiDispatcher;
 import com.elebras1.message.controller.IChannelsController;
 import com.elebras1.message.controller.observer.ISelectionObservable;
 import com.elebras1.message.controller.observer.ISelectionObserver;
@@ -13,7 +14,6 @@ import com.elebras1.message.factory.ViewFactory;
 import com.elebras1.message.ihm.view.IChannelView;
 import com.elebras1.message.ihm.view.IChannelsView;
 
-import javax.swing.*;
 import java.util.*;
 
 public class ChannelsController implements IChannelsController, ISelectionObservable, IDatabaseObserver {
@@ -22,13 +22,15 @@ public class ChannelsController implements IChannelsController, ISelectionObserv
     private final IChannelsView view;
     private final List<ISelectionObserver> observers;
     private final ViewFactory viewFactory;
+    private final UiDispatcher uiDispatcher;
 
-    public ChannelsController(DataManager dataManager, ISession session, IChannelsView view, ViewFactory viewFactory) {
+    public ChannelsController(DataManager dataManager, ISession session, IChannelsView view, ViewFactory viewFactory, UiDispatcher uiDispatcher) {
         this.dataManager = dataManager;
         this.session = session;
         this.view = view;
         this.viewFactory = viewFactory;
         this.observers = new ArrayList<>();
+        this.uiDispatcher = uiDispatcher;
         this.view.setOnAddChannelAction(this::onCreateChannel);
     }
 
@@ -157,16 +159,16 @@ public class ChannelsController implements IChannelsController, ISelectionObserv
 
     @Override
     public void notifyChannelAdded(Channel addedChannel) {
-        SwingUtilities.invokeLater(() -> this.loadChannels(session.getConnectedUser()));
+        uiDispatcher.dispatch(() -> this.loadChannels(session.getConnectedUser()));
     }
 
     @Override
     public void notifyChannelDeleted(Channel deletedChannel) {
-        SwingUtilities.invokeLater(() -> this.loadChannels(session.getConnectedUser()));
+        uiDispatcher.dispatch(() -> this.loadChannels(session.getConnectedUser()));
     }
 
     @Override
     public void notifyChannelModified(Channel modifiedChannel) {
-        SwingUtilities.invokeLater(() -> this.loadChannels(session.getConnectedUser()));
+        uiDispatcher.dispatch(() -> this.loadChannels(session.getConnectedUser()));
     }
 }

@@ -1,13 +1,26 @@
 package com.elebras1.message.factory;
 
 import com.elebras1.message.ihm.view.IChannelView;
+import com.elebras1.message.ihm.view.IChannelsView;
+import com.elebras1.message.ihm.view.IChatView;
 import com.elebras1.message.ihm.view.IMessageView;
+import com.elebras1.message.ihm.view.IMessagesView;
 import com.elebras1.message.ihm.view.IUserView;
+import com.elebras1.message.ihm.view.IUsersView;
 import com.elebras1.message.ihm.view.callback.OnClickUuidCallback;
 
 import java.util.UUID;
 
 public interface ViewFactory {
+
+    IChatView createChatView();
+
+    IMessagesView createMessagesView();
+
+    IUsersView createUsersView();
+
+    IChannelsView createChannelsView();
+
 
     /**
      * Crée une vue représentant un canal.
@@ -44,3 +57,4 @@ public interface ViewFactory {
      */
     IUserView createUserView(UUID id, String displayName, boolean online);
 }
+

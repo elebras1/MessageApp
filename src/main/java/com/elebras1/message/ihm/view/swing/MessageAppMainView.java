@@ -2,6 +2,7 @@ package com.elebras1.message.ihm.view.swing;
 
 import com.elebras1.message.controller.IMessageAppMainController;
 import com.elebras1.message.ihm.view.IMessageAppMainView;
+import com.elebras1.message.ihm.view.View;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,12 +31,13 @@ public class MessageAppMainView extends JFrame implements IMessageAppMainView {
     }
 
     @Override
-    public void addPanel(JComponent panel) {
+    public void addPanel(View panel) {
+        JComponent jPanel = (JComponent) panel;
         if (this.currentPanel != null) {
             this.getContentPane().remove(this.currentPanel);
         }
-        this.getContentPane().add(panel, BorderLayout.CENTER);
-        this.currentPanel = panel;
+        this.getContentPane().add(jPanel, BorderLayout.CENTER);
+        this.currentPanel = jPanel;
         this.revalidate();
         this.repaint();
     }

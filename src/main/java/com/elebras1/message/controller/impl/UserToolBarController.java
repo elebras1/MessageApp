@@ -3,20 +3,20 @@ package com.elebras1.message.controller.impl;
 import com.elebras1.message.controller.ILogoutController;
 import com.elebras1.message.controller.INavBarController;
 import com.elebras1.message.controller.IRemoveUserController;
-import com.elebras1.message.ihm.view.swing.EditProfilView;
-import com.elebras1.message.ihm.view.swing.LoginView;
-import com.elebras1.message.ihm.view.swing.MessageAppMainView;
-import com.elebras1.message.ihm.view.swing.SubscribeView;
+import com.elebras1.message.ihm.view.IMessageAppMainView;
+import com.elebras1.message.ihm.view.View;
 
 public class UserToolBarController implements INavBarController {
-    private final MessageAppMainView mainView;
-    private final SubscribeView subscribeView;
-    private final LoginView loginView;
-    private final EditProfilView editProfilView;
+    private final IMessageAppMainView mainView;
+    private final View subscribeView;
+    private final View loginView;
+    private final View editProfilView;
     private final ILogoutController logoutController;
     private final IRemoveUserController removeUserController;
 
-    public UserToolBarController(MessageAppMainView mainView, SubscribeView subscribeView, LoginView loginView, EditProfilView editProfilView, ILogoutController logoutController, IRemoveUserController removeUserController) {
+    public UserToolBarController(IMessageAppMainView mainView, View subscribeView, View loginView,
+                                  View editProfilView, ILogoutController logoutController,
+                                  IRemoveUserController removeUserController) {
         this.mainView = mainView;
         this.subscribeView = subscribeView;
         this.loginView = loginView;

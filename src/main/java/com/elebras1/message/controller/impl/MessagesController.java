@@ -8,12 +8,12 @@ import com.elebras1.message.core.session.ISession;
 import com.elebras1.message.datamodel.Channel;
 import com.elebras1.message.datamodel.Message;
 import com.elebras1.message.datamodel.User;
+import com.elebras1.message.common.UiDispatcher;
 import com.elebras1.message.factory.ViewFactory;
 import com.elebras1.message.ihm.view.IMessageView;
 import com.elebras1.message.ihm.view.IMessagesView;
 import com.elebras1.message.util.StringUtils;
 
-import javax.swing.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,18 +23,20 @@ public class MessagesController implements IMessagesController, ISelectionObserv
     private final IMessagesView view;
     private final ISession session;
     private final ViewFactory viewFactory;
+    private final UiDispatcher uiDispatcher;
     private UUID currentRecipientUuid;
 
-    public MessagesController(DataManager dataManager, ISession session, IMessagesView view, ViewFactory viewFactory) {
+    public MessagesController(DataManager dataManager, ISession session, IMessagesView view, ViewFactory viewFactory, UiDispatcher uiDispatcher) {
         this.dataManager = dataManager;
         this.session = session;
         this.view = view;
         this.viewFactory = viewFactory;
+        this.uiDispatcher = uiDispatcher;
     }
 
     @Override
     public void onRecipientSelected(UUID recipientUuid) {
-        SwingUtilities.invokeLater(() -> loadMessagesByRecipientUuid(recipientUuid));
+        uiDispatcher.dispatch(() -> loadMessagesByRecipientUuid(recipientUuid));
     }
 
     @Override
@@ -92,7 +94,7 @@ public class MessagesController implements IMessagesController, ISelectionObserv
         boolean isDirectMessage = addedMessage.getRecipient().equals(this.session.getConnectedUser().getUuid()) && addedMessage.getSender().getUuid().equals(currentRecipientUuid);
 
         if (isChannelMessage || isDirectMessage) {
-            SwingUtilities.invokeLater(() -> this.loadMessagesByRecipientUuid(currentRecipientUuid));
+            uiDispatcher.dispatch(() -> this.loadMessagesByRecipientUuid(currentRecipientUuid));
         }
     }
 
@@ -116,7 +118,7 @@ public class MessagesController implements IMessagesController, ISelectionObserv
     @Override
     public void notifyMessageDeleted(Message deletedMessage) {
         if (currentRecipientUuid != null) {
-            SwingUtilities.invokeLater(() -> this.loadMessagesByRecipientUuid(currentRecipientUuid));
+            uiDispatcher.dispatch(() -> this.loadMessagesByRecipientUuid(currentRecipientUuid));
         }
     }
 
@@ -133,14 +135,14 @@ public class MessagesController implements IMessagesController, ISelectionObserv
     @Override
     public void notifyUserDeleted(User deletedUser) {
         if(this.session.getConnectedUser() != null) {
-            this.loadMessagesByRecipientUuid(this.session.getConnectedUser().getUuid());
+            uiDispatcher.dispatch(() -> this.loadMessagesByRecipientUuid(this.session.getConnectedUser().getUuid()));
         }
     }
 
     @Override
     public void notifyUserModified(User modifiedUser) {
         if (this.session.getConnectedUser() != null) {
-            this.loadMessagesByRecipientUuid(this.session.getConnectedUser().getUuid());
+            uiDispatcher.dispatch(() -> this.loadMessagesByRecipientUuid(this.session.getConnectedUser().getUuid()));
         }
     }
 

@@ -1,6 +1,5 @@
 package com.elebras1.message.ihm.view;
 
-import javax.swing.*;
 
 public interface IChatView extends View {
 

@@ -2,7 +2,6 @@ package com.elebras1.message.ihm.view;
 
 import com.elebras1.message.datamodel.User;
 import com.elebras1.message.ihm.view.callback.OnCreateChannelCallback;
-import com.elebras1.message.ihm.view.swing.ChannelView;
 
 import java.util.List;
 import java.util.function.Consumer;

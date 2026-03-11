@@ -1,5 +1,6 @@
 package com.elebras1.message.controller.impl;
 
+import com.elebras1.message.common.UiDispatcher;
 import com.elebras1.message.controller.IUsersController;
 import com.elebras1.message.controller.observer.ISelectionObservable;
 import com.elebras1.message.controller.observer.ISelectionObserver;
@@ -12,8 +13,6 @@ import com.elebras1.message.datamodel.User;
 import com.elebras1.message.factory.ViewFactory;
 import com.elebras1.message.ihm.view.IUserView;
 import com.elebras1.message.ihm.view.IUsersView;
-
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +22,15 @@ public class UsersController implements IUsersController, ISelectionObservable, 
     private final IUsersView view;
     private final List<ISelectionObserver> observers;
     private final ViewFactory viewFactory;
+    private final UiDispatcher uiDispatcher;
 
-    public UsersController(DataManager dataManager, ISession session, IUsersView view, ViewFactory viewFactory) {
+    public UsersController(DataManager dataManager, ISession session, IUsersView view, ViewFactory viewFactory, UiDispatcher uiDispatcher) {
         this.dataManager = dataManager;
         this.session = session;
         this.view = view;
         this.viewFactory = viewFactory;
         this.observers = new ArrayList<>();
+        this.uiDispatcher = uiDispatcher;
     }
 
     @Override
@@ -83,19 +84,19 @@ public class UsersController implements IUsersController, ISelectionObservable, 
 
     @Override
     public void notifyUserAdded(User addedUser) {
-        SwingUtilities.invokeLater(this::loadUsers);
+        uiDispatcher.dispatch(this::loadUsers);
     }
 
     @Override
     public void notifyUserDeleted(User deletedUser) {
         if(this.session.getConnectedUser() != null) {
-            SwingUtilities.invokeLater(this::loadUsers);
+            uiDispatcher.dispatch(this::loadUsers);
         }
     }
 
     @Override
     public void notifyUserModified(User modifiedUser) {
-        SwingUtilities.invokeLater(this::loadUsers);
+        uiDispatcher.dispatch(this::loadUsers);
     }
 
     @Override

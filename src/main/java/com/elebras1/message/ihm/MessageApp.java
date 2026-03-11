@@ -2,6 +2,7 @@ package com.elebras1.message.ihm;
 
 import java.io.File;
 
+import com.elebras1.message.common.SwingUiDispatcher;
 import com.elebras1.message.controller.*;
 import com.elebras1.message.controller.impl.*;
 import com.elebras1.message.core.DataManager;
@@ -82,9 +83,8 @@ public class MessageApp {
 		UserToolBarView userToolBarView = new UserToolBarView(navBarController);
 		this.mMainView.setNavbarView(userToolBarView);
 
-		ChatView chatView = new ChatView();
 		ViewFactory viewFactory = new SwingViewFactory();
-		ChatController chatController = new ChatController(chatView, this.mDataManager, this.session, this.mMainView, viewFactory);
+		ChatController chatController = new ChatController(viewFactory.createChatView(), this.mDataManager, this.session, this.mMainView, viewFactory, new SwingUiDispatcher());
 		this.session.addObserver(chatController);
 		this.session.addObserver(userToolBarView);
 	}
