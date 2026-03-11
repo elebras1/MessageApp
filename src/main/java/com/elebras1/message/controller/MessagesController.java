@@ -50,7 +50,15 @@ public class MessagesController implements IMessagesController, ISelectionObserv
         conversation.sort(Comparator.comparing(Message::getEmissionDate));
 
         for (Message message : conversation) {
-            view.addMessage(new MessageView(message.getText(), message.getSender().getName() + " " + StringUtils.formatDate(message.getEmissionDate())));
+            boolean isMine = message.getSender().getUuid().equals(this.session.getConnectedUser().getUuid());
+            MessageView mv = new MessageView(
+                    message.getUuid(),
+                    message.getText(),
+                    message.getSender().getName() + " " + StringUtils.formatDate(message.getEmissionDate()),
+                    isMine
+            );
+            mv.setOnDeleteCallback(this::onDeleteMessage);
+            view.addMessage(mv);
         }
     }
 
@@ -93,8 +101,18 @@ public class MessagesController implements IMessagesController, ISelectionObserv
     }
 
     @Override
-    public void notifyMessageDeleted(Message deletedMessage) {
+    public void onDeleteMessage(UUID messageUuid) {
+        dataManager.getMessages().stream()
+                .filter(m -> m.getUuid().equals(messageUuid))
+                .findFirst()
+                .ifPresent(dataManager::deleteMessage);
+    }
 
+    @Override
+    public void notifyMessageDeleted(Message deletedMessage) {
+        if (currentRecipientUuid != null) {
+            SwingUtilities.invokeLater(() -> this.loadMessagesByRecipientUuid(currentRecipientUuid));
+        }
     }
 
     @Override

@@ -154,6 +154,19 @@ public class DataFilesManager {
 	}
 
 	/**
+	 * Suppression du fichier correspondant à un message ({@link Message}).
+	 *
+	 * @param message Message à supprimer.
+	 */
+	public void deleteMessageFile(Message message) {
+		String fileName = this.getFileName(message.getUuid(), Constants.MESSAGE_FILE_EXTENSION);
+		File file = new File(fileName);
+		if (file.exists()) {
+			file.delete();
+		}
+	}
+
+	/**
 	 * Génération d'un fichier pour un utilisateur ({@link User}).
 	 *
 	 * @param channel Utilisateur à générer.
