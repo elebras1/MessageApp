@@ -137,7 +137,9 @@ public class MessagesController implements IMessagesController, ISelectionObserv
 
     @Override
     public void notifyUserModified(User modifiedUser) {
-        this.loadMessagesByRecipientUuid(this.session.getConnectedUser().getUuid());
+        if (this.session.getConnectedUser() != null) {
+            this.loadMessagesByRecipientUuid(this.session.getConnectedUser().getUuid());
+        }
     }
 
     @Override

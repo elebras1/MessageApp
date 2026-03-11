@@ -83,7 +83,7 @@ public class MessageApp {
 		EditProfilController editProfilController = new EditProfilController(this.mDataManager, this.session);
 		EditProfilView editProfilView = new EditProfilView(editProfilController);
 		RemoveUserController removeUserController = new RemoveUserController(this.session, this.mDataManager);
-		LogoutController logoutController = new LogoutController(this.session);
+		LogoutController logoutController = new LogoutController(this.session, this.mDataManager);
 		this.navBarController = new UserToolBarController(this.mMainView, this.subscribeView, this.loginView, editProfilView, logoutController, removeUserController);
 		this.userToolBarView = new UserToolBarView(this.navBarController);
 		this.mMainView.setNavbarView(this.userToolBarView);

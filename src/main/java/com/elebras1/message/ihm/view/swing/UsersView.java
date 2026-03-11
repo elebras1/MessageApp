@@ -10,7 +10,7 @@ import java.util.List;
 public class UsersView extends JPanel implements IUsersView {
     private final ListElementView usersList;
     private final SearchBarView searchBar;
-    private final List<BubbleTextIdentifyView> allUsers = new ArrayList<>();
+    private final List<UserView> allUsers = new ArrayList<>();
 
     public UsersView() {
         this.setLayout(new BorderLayout());
@@ -26,7 +26,7 @@ public class UsersView extends JPanel implements IUsersView {
     private void filterUsers(String query) {
         this.usersList.clearContent();
         String lowerQuery = query.toLowerCase().trim();
-        for (BubbleTextIdentifyView userView : allUsers) {
+        for (UserView userView : allUsers) {
             if (lowerQuery.isEmpty() || userView.getText().toLowerCase().contains(lowerQuery)) {
                 this.usersList.addContent(userView);
             }
@@ -41,7 +41,7 @@ public class UsersView extends JPanel implements IUsersView {
     }
 
     @Override
-    public void addUser(BubbleTextIdentifyView userView) {
+    public void addUser(UserView userView) {
         this.allUsers.add(userView);
         String query = this.searchBar.getText();
         if (query.isEmpty() || userView.getText().toLowerCase().contains(query.toLowerCase())) {

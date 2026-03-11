@@ -10,7 +10,7 @@ import com.elebras1.message.datamodel.Channel;
 import com.elebras1.message.datamodel.Message;
 import com.elebras1.message.datamodel.User;
 import com.elebras1.message.ihm.view.IUsersView;
-import com.elebras1.message.ihm.view.swing.BubbleTextIdentifyView;
+import com.elebras1.message.ihm.view.swing.UserView;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -48,15 +48,18 @@ public class UsersController implements IUsersController, ISelectionObservable, 
 
     @Override
     public void loadUsers() {
+        if (this.session.getConnectedUser() == null) {
+            return;
+        }
         view.clearUsers();
         List<User> allUsers = new ArrayList<>(dataManager.getUsers());
         for (User user : allUsers) {
             if(user.getUuid().equals(session.getConnectedUser().getUuid())) {
                 continue;
             }
-            BubbleTextIdentifyView bubble = new BubbleTextIdentifyView(user.getUuid(), user.getName() + " (@" + user.getUserTag() + ")");
-            bubble.setOnClickCallback(this::notifyRecipientSelected);
-            view.addUser(bubble);
+            UserView userView = new UserView(user.getUuid(), user.getName() + " (@" + user.getUserTag() + ")", user.isOnline());
+            userView.setOnClickCallback(this::notifyRecipientSelected);
+            view.addUser(userView);
         }
     }
 

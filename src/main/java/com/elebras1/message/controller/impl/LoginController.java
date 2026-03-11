@@ -29,6 +29,7 @@ public class LoginController implements ILoginController {
             if (user.getUserTag().equals(tag)) {
                 if (user.getUserPassword().equals(password)) {
                     user.setOnline(true);
+                    this.dataManager.sendUser(user);
                     this.session.connect(user);
                     return;
                 } else {
