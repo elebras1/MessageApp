@@ -55,6 +55,9 @@ public class MessageAppJavaFx extends Application {
         session.addObserver(chatController);
         session.addObserver(userToolBarView);
 
+        NotifierController notifierController = new NotifierController(session);
+        dataManager.addObserver(notifierController);
+
         mainView.show();
     }
 

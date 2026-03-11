@@ -49,11 +49,6 @@ public class MessageAppLauncher {
 		DatabaseObserver observer = new DatabaseObserver();
 		dataManager.addObserver(observer);
 
-		if (IS_MOCK_ENABLED) {
-			MessageAppMock mock = new MessageAppMock(dbConnector, dataManager);
-			mock.showGUI();
-		}
-
 		// Vérification : On injecte les données de test UNIQUEMENT si le dossier est vide
 		if (isExchangeDirectoryEmpty(EXCHANGE_DIR)) {
 			System.out.println("Répertoire d'échange vide. Injection des données de test...");

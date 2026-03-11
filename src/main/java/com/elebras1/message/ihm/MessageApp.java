@@ -87,6 +87,9 @@ public class MessageApp {
 		ChatController chatController = new ChatController(viewFactory.createChatView(), this.mDataManager, this.session, this.mMainView, viewFactory, new SwingUiDispatcher());
 		this.session.addObserver(chatController);
 		this.session.addObserver(userToolBarView);
+
+		NotifierController notifierController = new NotifierController(this.session);
+		this.mDataManager.addObserver(notifierController);
 	}
 
 	/**
