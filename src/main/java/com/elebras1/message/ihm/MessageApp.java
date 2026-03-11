@@ -3,9 +3,10 @@ package com.elebras1.message.ihm;
 import java.io.File;
 
 import com.elebras1.message.controller.*;
+import com.elebras1.message.controller.impl.*;
 import com.elebras1.message.core.DataManager;
 import com.elebras1.message.core.session.Session;
-import com.elebras1.message.ihm.view.*;
+import com.elebras1.message.ihm.view.swing.*;
 
 import javax.swing.*;
 
