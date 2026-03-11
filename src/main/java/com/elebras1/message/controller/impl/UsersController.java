@@ -9,8 +9,9 @@ import com.elebras1.message.core.session.ISession;
 import com.elebras1.message.datamodel.Channel;
 import com.elebras1.message.datamodel.Message;
 import com.elebras1.message.datamodel.User;
+import com.elebras1.message.factory.ViewFactory;
+import com.elebras1.message.ihm.view.IUserView;
 import com.elebras1.message.ihm.view.IUsersView;
-import com.elebras1.message.ihm.view.swing.UserView;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -21,11 +22,13 @@ public class UsersController implements IUsersController, ISelectionObservable, 
     private final ISession session;
     private final IUsersView view;
     private final List<ISelectionObserver> observers;
+    private final ViewFactory viewFactory;
 
-    public UsersController(DataManager dataManager, ISession session, IUsersView view) {
+    public UsersController(DataManager dataManager, ISession session, IUsersView view, ViewFactory viewFactory) {
         this.dataManager = dataManager;
         this.session = session;
         this.view = view;
+        this.viewFactory = viewFactory;
         this.observers = new ArrayList<>();
     }
 
@@ -57,7 +60,7 @@ public class UsersController implements IUsersController, ISelectionObservable, 
             if(user.getUuid().equals(session.getConnectedUser().getUuid())) {
                 continue;
             }
-            UserView userView = new UserView(user.getUuid(), user.getName() + " (@" + user.getUserTag() + ")", user.isOnline());
+            IUserView userView = viewFactory.createUserView(user.getUuid(), user.getName() + " (@" + user.getUserTag() + ")", user.isOnline());
             userView.setOnClickCallback(this::notifyRecipientSelected);
             view.addUser(userView);
         }

@@ -1,5 +1,6 @@
 package com.elebras1.message.ihm.view.swing;
 
+import com.elebras1.message.ihm.view.IUserView;
 import com.elebras1.message.ihm.view.IUsersView;
 
 import javax.swing.*;
@@ -10,7 +11,7 @@ import java.util.List;
 public class UsersView extends JPanel implements IUsersView {
     private final ListElementView usersList;
     private final SearchBarView searchBar;
-    private final List<UserView> allUsers = new ArrayList<>();
+    private final List<IUserView> allUsers = new ArrayList<>();
 
     public UsersView() {
         this.setLayout(new BorderLayout());
@@ -26,9 +27,9 @@ public class UsersView extends JPanel implements IUsersView {
     private void filterUsers(String query) {
         this.usersList.clearContent();
         String lowerQuery = query.toLowerCase().trim();
-        for (UserView userView : allUsers) {
+        for (IUserView userView : allUsers) {
             if (lowerQuery.isEmpty() || userView.getText().toLowerCase().contains(lowerQuery)) {
-                this.usersList.addContent(userView);
+                this.usersList.addContent((JPanel) userView);
             }
         }
     }
@@ -41,11 +42,11 @@ public class UsersView extends JPanel implements IUsersView {
     }
 
     @Override
-    public void addUser(UserView userView) {
+    public void addUser(IUserView userView) {
         this.allUsers.add(userView);
         String query = this.searchBar.getText();
         if (query.isEmpty() || userView.getText().toLowerCase().contains(query.toLowerCase())) {
-            this.usersList.addContent(userView);
+            this.usersList.addContent((JPanel) userView);
         }
     }
 }

@@ -9,8 +9,8 @@ import com.elebras1.message.core.session.ISession;
 import com.elebras1.message.datamodel.Channel;
 import com.elebras1.message.datamodel.Message;
 import com.elebras1.message.datamodel.User;
+import com.elebras1.message.factory.ViewFactory;
 import com.elebras1.message.ihm.view.IChannelView;
-import com.elebras1.message.ihm.view.swing.ChannelView;
 import com.elebras1.message.ihm.view.IChannelsView;
 
 import javax.swing.*;
@@ -21,11 +21,13 @@ public class ChannelsController implements IChannelsController, ISelectionObserv
     private final ISession session;
     private final IChannelsView view;
     private final List<ISelectionObserver> observers;
+    private final ViewFactory viewFactory;
 
-    public ChannelsController(DataManager dataManager, ISession session, IChannelsView view) {
+    public ChannelsController(DataManager dataManager, ISession session, IChannelsView view, ViewFactory viewFactory) {
         this.dataManager = dataManager;
         this.session = session;
         this.view = view;
+        this.viewFactory = viewFactory;
         this.observers = new ArrayList<>();
         this.view.setOnAddChannelAction(this::onCreateChannel);
     }
@@ -54,7 +56,7 @@ public class ChannelsController implements IChannelsController, ISelectionObserv
         for (Channel channel : allChannels) {
             if (!channel.isPrivate() || channel.getUsers().contains(connectedUser)) {
                 boolean isCreator = channel.getCreator().equals(connectedUser);
-                IChannelView channelView = new ChannelView(
+                IChannelView channelView = viewFactory.createChannelView(
                         channel.getUuid(), channel.getName(), isCreator, channel.isPrivate(),
                         this::onRemoveChannel, this::onAddMemberRequested
                 );

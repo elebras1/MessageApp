@@ -8,9 +8,9 @@ import com.elebras1.message.core.session.ISession;
 import com.elebras1.message.datamodel.Channel;
 import com.elebras1.message.datamodel.Message;
 import com.elebras1.message.datamodel.User;
+import com.elebras1.message.factory.ViewFactory;
 import com.elebras1.message.ihm.view.IMessageView;
 import com.elebras1.message.ihm.view.IMessagesView;
-import com.elebras1.message.ihm.view.swing.MessageView;
 import com.elebras1.message.util.StringUtils;
 
 import javax.swing.*;
@@ -22,12 +22,14 @@ public class MessagesController implements IMessagesController, ISelectionObserv
     private final DataManager dataManager;
     private final IMessagesView view;
     private final ISession session;
+    private final ViewFactory viewFactory;
     private UUID currentRecipientUuid;
 
-    public MessagesController(DataManager dataManager, ISession session, IMessagesView view) {
+    public MessagesController(DataManager dataManager, ISession session, IMessagesView view, ViewFactory viewFactory) {
         this.dataManager = dataManager;
         this.session = session;
         this.view = view;
+        this.viewFactory = viewFactory;
     }
 
     @Override
@@ -54,7 +56,7 @@ public class MessagesController implements IMessagesController, ISelectionObserv
 
         for (Message message : conversation) {
             boolean isMine = message.getSender().getUuid().equals(this.session.getConnectedUser().getUuid());
-            IMessageView mv = new MessageView(
+            IMessageView mv = viewFactory.createMessageView(
                     message.getUuid(),
                     message.getText(),
                     message.getSender().getName() + " " + StringUtils.formatDate(message.getEmissionDate()),

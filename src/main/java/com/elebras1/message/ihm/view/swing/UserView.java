@@ -1,6 +1,6 @@
 package com.elebras1.message.ihm.view.swing;
 
-import com.elebras1.message.ihm.view.View;
+import com.elebras1.message.ihm.view.IUserView;
 import com.elebras1.message.ihm.view.callback.OnClickUuidCallback;
 
 import javax.swing.*;
@@ -11,7 +11,7 @@ import java.util.UUID;
  * Vue représentant un utilisateur avec un indicateur de présence (rond coloré).
  * Vert = connecté, Bleu = déconnecté.
  */
-public class UserView extends JPanel implements View {
+public class UserView extends JPanel implements IUserView {
 
     private static final Color ONLINE_COLOR = new Color(0x4CAF50);
     private static final Color OFFLINE_COLOR = new Color(0x2196F3);

@@ -5,6 +5,7 @@ import com.elebras1.message.core.DataManager;
 import com.elebras1.message.core.session.ISession;
 import com.elebras1.message.core.session.ISessionObserver;
 import com.elebras1.message.datamodel.User;
+import com.elebras1.message.factory.ViewFactory;
 import com.elebras1.message.ihm.view.IMessageAppMainView;
 import com.elebras1.message.ihm.view.swing.ChannelsView;
 import com.elebras1.message.ihm.view.swing.ChatView;
@@ -16,32 +17,33 @@ public class ChatController implements IChatController, ISessionObserver {
     private final DataManager dataManager;
     private final ISession session;
     private final IMessageAppMainView mainView;
+    private final ViewFactory viewFactory;
 
-
-    public ChatController(ChatView view, DataManager dataManager, ISession session, IMessageAppMainView mainView) {
+    public ChatController(ChatView view, DataManager dataManager, ISession session, IMessageAppMainView mainView, ViewFactory viewFactory) {
         this.view = view;
         this.dataManager = dataManager;
         this.session = session;
         this.mainView = mainView;
+        this.viewFactory = viewFactory;
     }
 
     @Override
     public void notifyLogin(User connectedUser) {
         MessagesView messagesView = new MessagesView();
-        MessagesController listMessageController = new MessagesController(dataManager, session, messagesView);
+        MessagesController listMessageController = new MessagesController(dataManager, session, messagesView, viewFactory);
         dataManager.addObserver(listMessageController);
         messagesView.setSendAction(listMessageController::sendMessage);
         view.setRightSection(messagesView);
 
         UsersView usersView = new UsersView();
-        UsersController listUserController = new UsersController(dataManager, session, usersView);
+        UsersController listUserController = new UsersController(dataManager, session, usersView, viewFactory);
         listUserController.addSelectionObserver(listMessageController);
         listUserController.loadUsers();
         dataManager.addObserver(listUserController);
         view.setLeftUpSection(usersView);
 
         ChannelsView channelView = new ChannelsView();
-        ChannelsController listChannelController = new ChannelsController(dataManager,  session, channelView);
+        ChannelsController listChannelController = new ChannelsController(dataManager, session, channelView, viewFactory);
         listChannelController.addSelectionObserver(listMessageController);
         listChannelController.loadChannels(connectedUser);
         dataManager.addObserver(listChannelController);

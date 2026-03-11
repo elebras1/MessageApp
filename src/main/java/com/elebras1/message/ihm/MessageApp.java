@@ -6,6 +6,8 @@ import com.elebras1.message.controller.*;
 import com.elebras1.message.controller.impl.*;
 import com.elebras1.message.core.DataManager;
 import com.elebras1.message.core.session.Session;
+import com.elebras1.message.factory.SwingViewFactory;
+import com.elebras1.message.factory.ViewFactory;
 import com.elebras1.message.ihm.view.swing.*;
 
 import javax.swing.*;
@@ -26,14 +28,6 @@ public class MessageApp {
 	 * Vue principale de l'application.
 	 */
 	private MessageAppMainView mMainView;
-	private SubscribeView subscribeView;
-	private LoginView loginView;
-	private UserToolBarView userToolBarView;
-	private INavBarController navBarController;
-	private ISubscribeController subscribeController;
-	private ILoginController loginController;
-	private IMessageAppMainController messageAppMainController;
-	private MessagesController listMessageController;
 
 	/**
 	 * Constructeur.
@@ -74,22 +68,23 @@ public class MessageApp {
 	 * Initialisation de l'interface graphique.
 	 */
 	protected void initGui() {
-		this.messageAppMainController = new MessageAppMainController(this.mDataManager);
-		this.mMainView = new MessageAppMainView(this.messageAppMainController);
-		this.subscribeController = new SubscribeController(this.mDataManager);
-		this.loginController = new LoginController(this.mDataManager, this.session);
-		this.subscribeView = new SubscribeView(this.subscribeController);
-		this.loginView = new LoginView(this.loginController);
+		IMessageAppMainController messageAppMainController = new MessageAppMainController(this.mDataManager);
+		this.mMainView = new MessageAppMainView(messageAppMainController);
+		ISubscribeController subscribeController = new SubscribeController(this.mDataManager);
+		ILoginController loginController = new LoginController(this.mDataManager, this.session);
+		SubscribeView subscribeView = new SubscribeView(subscribeController);
+		LoginView loginView = new LoginView(loginController);
 		EditProfilController editProfilController = new EditProfilController(this.mDataManager, this.session);
 		EditProfilView editProfilView = new EditProfilView(editProfilController);
 		RemoveUserController removeUserController = new RemoveUserController(this.session, this.mDataManager);
 		LogoutController logoutController = new LogoutController(this.session, this.mDataManager);
-		this.navBarController = new UserToolBarController(this.mMainView, this.subscribeView, this.loginView, editProfilView, logoutController, removeUserController);
-		this.userToolBarView = new UserToolBarView(this.navBarController);
-		this.mMainView.setNavbarView(this.userToolBarView);
+		INavBarController navBarController = new UserToolBarController(this.mMainView, subscribeView, loginView, editProfilView, logoutController, removeUserController);
+		UserToolBarView userToolBarView = new UserToolBarView(navBarController);
+		this.mMainView.setNavbarView(userToolBarView);
 
 		ChatView chatView = new ChatView();
-		ChatController chatController = new ChatController(chatView, this.mDataManager, this.session, this.mMainView);
+		ViewFactory viewFactory = new SwingViewFactory();
+		ChatController chatController = new ChatController(chatView, this.mDataManager, this.session, this.mMainView, viewFactory);
 		this.session.addObserver(chatController);
 		this.session.addObserver(userToolBarView);
 	}
